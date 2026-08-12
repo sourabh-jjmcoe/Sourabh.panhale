@@ -4,7 +4,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center mb-16">
             
             <!-- Left Editorial Text Content (Column 1-7) -->
-            <div class="lg:col-span-7 flex flex-col items-start z-10 reveal-on-scroll">
+            <div class="lg:col-span-7 flex flex-col items-start z-10">
                 
                 <!-- Technical Eyebrow -->
                 <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded border border-[#00F0FF]/30 bg-[#00F0FF]/10 text-[#00F0FF] text-[11px] font-mono tracking-widest uppercase mb-6 shadow-sm">
@@ -67,7 +67,7 @@
             </div>
 
             <!-- Right Technical Portrait Frame with Restrained Parallax (Column 8-12) -->
-            <div class="lg:col-span-5 relative flex justify-center lg:justify-end z-10 reveal-on-scroll">
+            <div class="lg:col-span-5 relative flex justify-center lg:justify-end z-10">
                 
                 <div id="hero-portrait-card" class="relative w-full max-w-sm sm:max-w-md group transition-all duration-300">
                     
@@ -124,7 +124,7 @@
         </div>
 
         <!-- Lower Hero Negative Space Intentional Metadata Bar -->
-        <div class="pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-500 reveal-on-scroll">
+        <div class="pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-500">
             <div class="flex items-center gap-4">
                 <span class="text-[#00F0FF]">01 / INTRODUCTION</span>
                 <span class="text-slate-700">|</span>
