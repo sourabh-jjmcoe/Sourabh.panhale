@@ -9,35 +9,38 @@ if ($uri !== '/' && file_exists(__DIR__ . '/../public' . $uri)) {
 }
 
 // 2. Vercel Storage Environment setup in /tmp
-$tmpDir = '/tmp';
-$storageDir = $tmpDir . '/storage';
+$tmpStorage = '/tmp/storage';
+$tmpBootstrap = '/tmp/bootstrap/cache';
 
-@mkdir($storageDir . '/framework/views', 0755, true);
-@mkdir($storageDir . '/framework/sessions', 0755, true);
-@mkdir($storageDir . '/framework/cache', 0755, true);
-@mkdir($storageDir . '/logs', 0755, true);
-@mkdir($tmpDir . '/bootstrap/cache', 0755, true);
+@mkdir($tmpStorage . '/framework/views', 0755, true);
+@mkdir($tmpStorage . '/framework/sessions', 0755, true);
+@mkdir($tmpStorage . '/framework/cache', 0755, true);
+@mkdir($tmpStorage . '/logs', 0755, true);
+@mkdir($tmpBootstrap, 0755, true);
 
-putenv('VIEW_COMPILED_PATH=' . $storageDir . '/framework/views');
-putenv('APP_SERVICES_CACHE=' . $tmpDir . '/bootstrap/cache/services.php');
-putenv('APP_PACKAGES_CACHE=' . $tmpDir . '/bootstrap/cache/packages.php');
-putenv('APP_CONFIG_CACHE=' . $tmpDir . '/bootstrap/cache/config.php');
-putenv('APP_ROUTES_CACHE=' . $tmpDir . '/bootstrap/cache/routes.php');
+// 3. Force environment overrides to /tmp
+$_ENV['VIEW_COMPILED_PATH'] = $tmpStorage . '/framework/views';
+$_ENV['APP_SERVICES_CACHE'] = $tmpBootstrap . '/services.php';
+$_ENV['APP_PACKAGES_CACHE'] = $tmpBootstrap . '/packages.php';
+$_ENV['APP_CONFIG_CACHE'] = $tmpBootstrap . '/config.php';
+$_ENV['APP_ROUTES_CACHE'] = $tmpBootstrap . '/routes.php';
+$_ENV['LOG_CHANNEL'] = 'stderr';
+
+$appKey = getenv('APP_KEY') ?: ($_ENV['APP_KEY'] ?? 'base64:Xd/wTMvshxfm5wjrAW4r6I6akWqBx9MdM6vNiBNIiak=');
+$_ENV['APP_KEY'] = $appKey;
+$_SERVER['APP_KEY'] = $appKey;
+
+$_ENV['APP_ENV'] = $_ENV['APP_ENV'] ?? 'production';
+$_SERVER['APP_ENV'] = $_SERVER['APP_ENV'] ?? 'production';
+
+putenv('VIEW_COMPILED_PATH=' . $tmpStorage . '/framework/views');
+putenv('APP_SERVICES_CACHE=' . $tmpBootstrap . '/services.php');
+putenv('APP_PACKAGES_CACHE=' . $tmpBootstrap . '/packages.php');
+putenv('APP_CONFIG_CACHE=' . $tmpBootstrap . '/config.php');
+putenv('APP_ROUTES_CACHE=' . $tmpBootstrap . '/routes.php');
 putenv('LOG_CHANNEL=stderr');
-
-// 3. Fallback App Key & Environment
-if (!getenv('APP_KEY') && !isset($_ENV['APP_KEY'])) {
-    $key = 'base64:Xd/wTMvshxfm5wjrAW4r6I6akWqBx9MdM6vNiBNIiak=';
-    putenv("APP_KEY={$key}");
-    $_ENV['APP_KEY'] = $key;
-    $_SERVER['APP_KEY'] = $key;
-}
-
-if (!getenv('APP_ENV') && !isset($_ENV['APP_ENV'])) {
-    putenv('APP_ENV=production');
-    $_ENV['APP_ENV'] = 'production';
-    $_SERVER['APP_ENV'] = 'production';
-}
+putenv('APP_KEY=' . $appKey);
+putenv('APP_ENV=' . $_ENV['APP_ENV']);
 
 // 4. Override Server Request Script paths so Laravel Route Matching works cleanly
 $_SERVER['SCRIPT_NAME'] = '/index.php';
