@@ -1,0 +1,59 @@
+# Stage 1: Build Frontend Assets (Vite)
+FROM node:20-alpine AS node-builder
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci || npm install
+
+COPY . .
+RUN npm run build || true
+
+# Stage 2: Install Composer Dependencies
+FROM composer:2.7 AS composer-builder
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+
+# Stage 3: Production PHP Runtime Engine
+FROM php:8.3-cli-alpine
+
+# Install System Dependencies & PHP Extensions required by Laravel 12
+RUN apk add --no-cache \
+    curl \
+    libpng-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    git \
+    oniguruma-dev \
+    bash \
+    icu-dev \
+    libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+
+WORKDIR /var/www/html
+
+# Copy Application Source Code
+COPY . /var/www/html
+
+# Copy Vendor Dependencies & Built Assets from Builders
+COPY --from=composer-builder /app/vendor /var/www/html/vendor
+COPY --from=node-builder /app/public/build /var/www/html/public/build
+
+# Ensure Permissions for Storage & Cache Directories
+RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Copy Container Entrypoint Script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Production Environment Defaults
+ENV PORT=8000
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+
+EXPOSE 8000
+
+ENTRYPOINT ["docker-entrypoint.sh"]
