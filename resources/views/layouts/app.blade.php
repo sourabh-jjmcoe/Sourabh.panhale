@@ -9,10 +9,10 @@
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="https://sourabh-panhale.vercel.app">
     <meta property="og:title" content="Sourabh Panhale — PHP / Laravel Developer">
     <meta property="og:description" content="Building thoughtful, reliable web systems with Laravel and modern PHP.">
-    <meta property="og:image" content="{{ asset('images/sourabh-portrait.png') }}">
+    <meta property="og:image" content="/images/sourabh-portrait.png">
 
     <title>Sourabh Panhale — PHP / Laravel Developer</title>
 
@@ -205,6 +205,6 @@
     @include('components.case-study-modal')
 
     <!-- Interactive Script -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>

@@ -89,7 +89,7 @@
 
                         <!-- Portrait Image Container -->
                         <div class="relative aspect-[4/5] rounded-lg overflow-hidden bg-[#060709] border border-white/10">
-                            <img src="{{ asset('images/sourabh-portrait.png') }}" 
+                            <img src="/images/sourabh-portrait.png" 
                                  alt="Sourabh Panhale — PHP / Laravel Developer" 
                                  class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-700 transform"
                                  loading="eager" />

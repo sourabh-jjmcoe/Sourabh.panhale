@@ -89,7 +89,7 @@
                     </div>
 
                     <div class="relative rounded-lg overflow-hidden border border-white/10 shadow-2xl">
-                        <img src="{{ asset('images/college-admission-mockup.png') }}" 
+                        <img src="/images/college-admission-mockup.png" 
                              alt="College Admission Management System Interface" 
                              class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500" 
                              loading="lazy" />
@@ -120,7 +120,7 @@
                     </div>
 
                     <div class="relative rounded-lg overflow-hidden border border-white/10 shadow-2xl">
-                        <img src="{{ asset('images/healthcare-system-mockup.png') }}" 
+                        <img src="/images/healthcare-system-mockup.png" 
                              alt="Healthcare PHC Management System Interface" 
                              class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500" 
                              loading="lazy" />
