@@ -44,6 +44,9 @@
         }
     </script>
 
+    <!-- Vite Assets -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <!-- Custom Dark Technical Design System Styles -->
     <style>
         html {
@@ -138,16 +141,16 @@
             box-shadow: 0 0 12px #00F0FF;
         }
 
-        /* Scroll Reveal Utility */
+        /* Scroll Reveal Utility - 100% Always Visible Override */
         .reveal-on-scroll {
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 1 !important;
+            transform: none !important;
             transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 1 !important;
+            transform: none !important;
         }
 
         /* Background Noise Overlay */
@@ -205,6 +208,6 @@
     @include('components.case-study-modal')
 
     <!-- Interactive Script -->
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js" defer></script>
 </body>
 </html>
