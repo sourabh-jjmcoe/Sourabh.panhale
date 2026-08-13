@@ -1,0 +1,14 @@
+composer.json
+composer.lock
+vendor
+app
+bootstrap
+config
+database
+routes
+storage
+tests
+artisan
+phpunit.xml
+Dockerfile.vercel
+docker-entrypoint.sh
