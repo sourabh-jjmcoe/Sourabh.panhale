@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCaseStudyModal();
   initSkillsInspector();
   initArchitectureInspector();
+  initArchitectureSimulator();
   initMagneticButtons();
   initContactForm();
   initPortraitParallax();
@@ -15,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initPhilosophyHover();
   initCommandPalette();
+  initArtisanTerminal();
+  initTelemetryConsole();
+  initCodeInspector();
+  initThemeSwitcher();
 });
 
 /* 0. Preloader Removal */
@@ -121,7 +126,7 @@ function initScrollSpy() {
   sections.forEach(sec => observer.observe(sec));
 }
 
-/* 4. Portrait Card Restrained Mouse Parallax (2-4px Tilt) */
+/* 4. Portrait Card Restrained Mouse Parallax */
 function initPortraitParallax() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -153,7 +158,7 @@ function initPortraitParallax() {
   });
 }
 
-/* 4.1 Card 3D Tilt Effect for Project & Tech Cards */
+/* 4.1 Card 3D Tilt Effect */
 function initCardTilt() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -176,7 +181,7 @@ function initCardTilt() {
   });
 }
 
-/* 5. Custom Dual-Ring Cursor Dot (Disabled on Mobile/Touch) */
+/* 5. Custom Dual-Ring Cursor Dot */
 function initCustomCursor() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
@@ -327,7 +332,7 @@ function initCommandPalette() {
   });
 }
 
-/* 9. Case Study Modal System */
+/* 9. Case Study Modal System with ERD Diagram Tab */
 const caseStudyData = {
   college: {
     title: "College Admission Management System",
@@ -350,7 +355,13 @@ const caseStudyData = {
       "Implemented Custom Middleware to lock form edits once an application enters verification phase.",
       "Utilized Laravel Blade Components to maintain consistent UI density across all admin views."
     ],
-    learned: "Mastered multi-step form validation handling in Laravel, handling edge-case database concurrency during peak submission periods, and designing clean administrative workflows."
+    learned: "Mastered multi-step form validation handling in Laravel, handling edge-case database concurrency during peak submission periods, and designing clean administrative workflows.",
+    erd: [
+      { name: "users", cols: "id (PK), name, email, password, role_id, created_at" },
+      { name: "applicants", cols: "id (PK), user_id (FK), dob, phone, category, hsc_marks" },
+      { name: "applications", cols: "id (PK), applicant_id (FK), status, verified_by, remarks" },
+      { name: "merit_lists", cols: "id (PK), application_id (FK), rank, percentage, course_code" }
+    ]
   },
   healthcare: {
     title: "Healthcare / PHC Management System",
@@ -373,7 +384,13 @@ const caseStudyData = {
       "Normalized DB schema for patient vitals and prescription details to ensure long-term data integrity.",
       "Avoided heavy JavaScript dependencies to keep bundle payload minimal for low-bandwidth clinic connections."
     ],
-    learned: "Gained deep understanding of domain modeling for medical workflows, privacy-conscious data structure design, and optimizing database queries for high-volume daily patient records."
+    learned: "Gained deep understanding of domain modeling for medical workflows, privacy-conscious data structure design, and optimizing database queries for high-volume daily patient records.",
+    erd: [
+      { name: "patients", cols: "id (PK), uhid, name, age, gender, contact, blood_group" },
+      { name: "opd_queues", cols: "id (PK), patient_id (FK), token_no, doctor_id, status" },
+      { name: "prescriptions", cols: "id (PK), opd_queue_id (FK), diagnosis, instructions" },
+      { name: "pharmacy_stocks", cols: "id (PK), medicine_name, batch_no, quantity, unit_price" }
+    ]
   }
 };
 
@@ -447,11 +464,21 @@ function populateModal(data) {
     </li>`
   ).join('');
 
+  const erdList = document.getElementById('modal-erd-list');
+  if (erdList && data.erd) {
+    erdList.innerHTML = data.erd.map(table => `
+      <div class="p-3 rounded border border-white/10 bg-[#060709] font-mono text-xs">
+        <span class="text-[#00F0FF] font-bold block mb-1">TABLE // ${table.name}</span>
+        <span class="text-slate-400">${table.cols}</span>
+      </div>
+    `).join('');
+  }
+
   const ghBtn = document.getElementById('modal-github-btn');
   if (ghBtn) ghBtn.href = data.github;
 }
 
-/* 10. Interactive Capability Map (Skills Inspector) */
+/* 10. Interactive Capability Map */
 const skillDetails = {
   laravel: {
     name: "Laravel 12",
@@ -538,7 +565,7 @@ function initSkillsInspector() {
   });
 }
 
-/* 11. System Architecture Inspector */
+/* 11. System Architecture Inspector & Interactive Simulator */
 const archNodes = {
   client: {
     title: "01 // Client Browser",
@@ -605,6 +632,46 @@ function initArchitectureInspector() {
   });
 }
 
+function initArchitectureSimulator() {
+  const simBtn = document.getElementById('run-arch-sim');
+  const simLog = document.getElementById('arch-sim-log');
+  if (!simBtn || !simLog) return;
+
+  const steps = ['client', 'vite', 'router', 'controller', 'eloquent', 'database'];
+  let isSimulating = false;
+
+  simBtn.addEventListener('click', () => {
+    if (isSimulating) return;
+    isSimulating = true;
+    simBtn.disabled = true;
+    simBtn.innerHTML = `<span class="animate-spin inline-block">⚙</span> RUNNING SIMULATION...`;
+
+    let i = 0;
+    simLog.innerHTML = `<span class="text-[#00F0FF]">SIMULATION INITIALIZED //</span> Executing Request Trace...<br>`;
+
+    const interval = setInterval(() => {
+      if (i < steps.length) {
+        const key = steps[i];
+        const node = document.querySelector(`[data-arch-node="${key}"]`);
+        if (node) {
+          node.click();
+          node.classList.add('pulse-glow');
+          setTimeout(() => node.classList.remove('pulse-glow'), 600);
+        }
+        simLog.innerHTML += `<span class="text-emerald-400">Step 0${i + 1}:</span> ${archNodes[key].title} [OK]<br>`;
+        simLog.scrollTop = simLog.scrollHeight;
+        i++;
+      } else {
+        clearInterval(interval);
+        simLog.innerHTML += `<span class="text-[#00F0FF]">✔ REQUEST TRACE COMPLETE //</span> Response 200 OK (0.024s)<br>`;
+        simBtn.disabled = false;
+        simBtn.innerHTML = `▶ SIMULATE REQUEST TRACE`;
+        isSimulating = false;
+      }
+    }, 600);
+  });
+}
+
 /* 12. Magnetic Button Effect */
 function initMagneticButtons() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -660,5 +727,254 @@ function initContactForm() {
         if (statusMsg) statusMsg.classList.add('hidden');
       }, 5000);
     }, 1200);
+  });
+}
+
+/* 14. Artisan Terminal CLI Engine */
+function initArtisanTerminal() {
+  const terminal = document.getElementById('artisan-terminal');
+  const input = document.getElementById('term-input');
+  const output = document.getElementById('term-output');
+  const closeBtn = document.getElementById('term-close');
+  const triggers = document.querySelectorAll('[data-open-terminal]');
+
+  if (!terminal || !input || !output) return;
+
+  const openTerminal = () => {
+    terminal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    setTimeout(() => input.focus(), 50);
+  };
+
+  const closeTerminal = () => {
+    terminal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  };
+
+  triggers.forEach(t => t.addEventListener('click', openTerminal));
+  if (closeBtn) closeBtn.addEventListener('click', closeTerminal);
+
+  terminal.addEventListener('click', (e) => {
+    if (e.target === terminal || e.target.id === 'term-backdrop') closeTerminal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '`' || e.key === '~') {
+      const activeTag = document.activeElement.tagName;
+      if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
+        e.preventDefault();
+        terminal.classList.contains('hidden') ? openTerminal() : closeTerminal();
+      }
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const cmd = input.value.trim();
+      input.value = '';
+      executeArtisanCmd(cmd);
+    }
+  });
+
+  function executeArtisanCmd(cmd) {
+    appendLog(`$ ${cmd}`, 'text-[#00F0FF]');
+    if (!cmd) return;
+
+    const lower = cmd.toLowerCase();
+
+    if (lower === 'clear') {
+      output.innerHTML = '';
+      return;
+    }
+
+    if (lower === 'help') {
+      appendLog(`AVAILABLE ARTISAN COMMANDS:
+  php artisan portfolio:about        Display developer background
+  php artisan projects:show admission Display admission system specs
+  php artisan projects:show health    Display healthcare PHC specs
+  php artisan skills:inspect laravel  Inspect Laravel 12 core stack
+  php artisan contact:send           Jump to direct transmission form
+  clear                              Clear terminal buffer`, 'text-slate-300');
+      return;
+    }
+
+    if (lower.includes('portfolio:about')) {
+      appendLog(`SOURABH PANHALE — PHP / LARAVEL DEVELOPER
+Role: Software Solutions & Web Development
+Stack: Laravel 12, PHP 8.3, MySQL, Blade, Tailwind CSS
+Location: Pune, MH, India`, 'text-emerald-400');
+    } else if (lower.includes('projects:show admission')) {
+      appendLog(`[PROJECT 001] College Admission Management System
+Stack: Laravel 12, Eloquent ORM, MySQL, Blade
+Workflow: Multi-stage application form, officer verification state machine, automated merit rank engine.`, 'text-[#00F0FF]');
+    } else if (lower.includes('projects:show health')) {
+      appendLog(`[PROJECT 002] Healthcare / PHC Management System
+Stack: Laravel 12, MySQL InnoDB, Blade
+Workflow: OPD patient queue management, clinical records, doctor prescriptions, pharmacy inventory stock deduction.`, 'text-emerald-400');
+    } else if (lower.includes('skills:inspect')) {
+      appendLog(`[SKILL INSPECTION] Laravel 12 Specialist
+Primary framework engine for Eloquent ORM, Artisan CLI, Middleware pipelines, and REST API architecture.`, 'text-cyan-400');
+    } else if (lower.includes('contact:send')) {
+      closeTerminal();
+      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      appendLog(`Command "${cmd}" not recognized. Type "help" for available commands.`, 'text-red-400');
+    }
+  }
+
+  function appendLog(text, colorClass = 'text-slate-300') {
+    const line = document.createElement('div');
+    line.className = `mb-1 ${colorClass}`;
+    line.textContent = text;
+    output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
+  }
+}
+
+/* 15. Real-Time Telemetry Monitor */
+function initTelemetryConsole() {
+  const fpsEl = document.getElementById('telemetry-fps');
+  if (!fpsEl) return;
+
+  let frameCount = 0;
+  let lastTime = performance.now();
+
+  function calcFPS() {
+    const now = performance.now();
+    frameCount++;
+    if (now - lastTime >= 1000) {
+      const fps = Math.round((frameCount * 1000) / (now - lastTime));
+      fpsEl.textContent = `${fps} FPS`;
+      frameCount = 0;
+      lastTime = now;
+    }
+    requestAnimationFrame(calcFPS);
+  }
+  requestAnimationFrame(calcFPS);
+}
+
+/* 16. Code Snippet Inspector */
+function initCodeInspector() {
+  const codeTabs = document.querySelectorAll('[data-code-tab]');
+  const codeBlock = document.getElementById('code-snippet-block');
+  const codeTitle = document.getElementById('code-snippet-title');
+
+  if (!codeTabs.length || !codeBlock) return;
+
+  const snippets = {
+    request: {
+      title: "StoreApplicantRequest.php — Form Validation",
+      code: `<?php
+
+namespace App\\Http\\Requests;
+
+use Illuminate\\Foundation\\Http\\FormRequest;
+
+class StoreApplicantRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'full_name'  => ['required', 'string', 'max:255'],
+            'hsc_marks'  => ['required', 'numeric', 'min:35', 'max:100'],
+            'category'   => ['required', 'string', 'in:OPEN,OBC,SC,ST'],
+            'documents'  => ['required', 'array', 'min:2'],
+            'documents.*'=> ['file', 'mimes:pdf,jpg,png', 'max:2048'],
+        ];
+    }
+}`
+    },
+    transaction: {
+      title: "AdmissionSubmitAction.php — DB Transaction",
+      code: `<?php
+
+namespace App\\Actions;
+
+use App\\Models\\Application;
+use Illuminate\\Support\\Facades\\DB;
+
+class SubmitApplicationAction
+{
+    public function execute(array $data, int $userId): Application
+    {
+        return DB::transaction(function () use ($data, $userId) {
+            $application = Application::create([
+                'user_id' => $userId,
+                'status'  => 'SUBMITTED',
+                'submitted_at' => now(),
+            ]);
+
+            $application->documents()->createMany($data['documents']);
+            $application->calculateMeritScore();
+
+            return $application;
+        });
+    }
+}`
+    },
+    queue: {
+      title: "OPDQueueProcessorJob.php — Background Job",
+      code: `<?php
+
+namespace App\\Jobs;
+
+use App\\Models\\OpdQueue;
+use Illuminate\\Contracts\\Queue\\ShouldQueue;
+
+class ProcessOpdTokenJob implements ShouldQueue
+{
+    public function __construct(public OpdQueue $token) {}
+
+    public function handle(): void
+    {
+        $this->token->update([
+            'status' => 'IN_CONSULTATION',
+            'called_at' => now(),
+        ]);
+        
+        event(new OpdTokenCalledEvent($this->token));
+    }
+}`
+    }
+  };
+
+  codeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const key = tab.getAttribute('data-code-tab');
+      const snippet = snippets[key];
+      if (!snippet) return;
+
+      codeTitle.textContent = snippet.title;
+      codeBlock.textContent = snippet.code;
+
+      codeTabs.forEach(t => {
+        if (t === tab) {
+          t.classList.add('border-[#00F0FF]', 'bg-[#00F0FF]/15', 'text-[#00F0FF]');
+          t.classList.remove('border-white/10', 'text-slate-400');
+        } else {
+          t.classList.remove('border-[#00F0FF]', 'bg-[#00F0FF]/15', 'text-[#00F0FF]');
+          t.classList.add('border-white/10', 'text-slate-400');
+        }
+      });
+    });
+  });
+}
+
+/* 17. Developer Theme & Accent Switcher */
+function initThemeSwitcher() {
+  const themeBtns = document.querySelectorAll('[data-theme]');
+  const setTheme = (theme) => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('portfolio_theme', theme);
+  };
+  const saved = localStorage.getItem('portfolio_theme') || 'cyan';
+  setTheme(saved);
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => setTheme(btn.getAttribute('data-theme')));
   });
 }
