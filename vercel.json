@@ -1,15 +1,10 @@
 {
-  "framework": null,
-  "buildCommand": null,
-  "outputDirectory": "public",
   "cleanUrls": true,
-  "routes": [
+  "outputDirectory": "public",
+  "rewrites": [
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
