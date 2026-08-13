@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPhilosophyHover();
   initCommandPalette();
   initArtisanTerminal();
-  initTelemetryConsole();
+  initRealTelemetryConsole();
   initCodeInspector();
   initThemeSwitcher();
 });
@@ -321,18 +321,22 @@ function initCommandPalette() {
   items.forEach(item => {
     item.addEventListener('click', () => {
       const targetId = item.getAttribute('data-target');
+      const action = item.getAttribute('data-action');
       closeCmd();
       if (targetId) {
         const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          targetEl.scrollIntoView({ behavior: 'smooth' });
-        }
+        if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
+      } else if (action === 'terminal') {
+        const term = document.getElementById('artisan-terminal');
+        if (term) term.classList.remove('hidden');
+      } else if (action === 'resume') {
+        window.location.href = 'mailto:sourabh.panhale.dev@gmail.com';
       }
     });
   });
 }
 
-/* 9. Case Study Modal System with ERD Diagram Tab */
+/* 9. Case Study Modal System with ERD Diagram Tab & Key Relationships */
 const caseStudyData = {
   college: {
     title: "College Admission Management System",
@@ -357,10 +361,10 @@ const caseStudyData = {
     ],
     learned: "Mastered multi-step form validation handling in Laravel, handling edge-case database concurrency during peak submission periods, and designing clean administrative workflows.",
     erd: [
-      { name: "users", cols: "id (PK), name, email, password, role_id, created_at" },
-      { name: "applicants", cols: "id (PK), user_id (FK), dob, phone, category, hsc_marks" },
-      { name: "applications", cols: "id (PK), applicant_id (FK), status, verified_by, remarks" },
-      { name: "merit_lists", cols: "id (PK), application_id (FK), rank, percentage, course_code" }
+      { name: "users", cols: "id PK, name, email, password, role_id, created_at", desc: "User authentication & identity table" },
+      { name: "applicants", cols: "id PK, user_id FK, dob, phone, category, hsc_marks", desc: "Student profile & academic score data" },
+      { name: "applications", cols: "id PK, applicant_id FK, course_id FK, status, verified_by", desc: "Main submission state machine tracking" },
+      { name: "merit_lists", cols: "id PK, application_id FK, rank, aggregate_pct", desc: "Calculated ranking entries per stream" }
     ]
   },
   healthcare: {
@@ -386,10 +390,10 @@ const caseStudyData = {
     ],
     learned: "Gained deep understanding of domain modeling for medical workflows, privacy-conscious data structure design, and optimizing database queries for high-volume daily patient records.",
     erd: [
-      { name: "patients", cols: "id (PK), uhid, name, age, gender, contact, blood_group" },
-      { name: "opd_queues", cols: "id (PK), patient_id (FK), token_no, doctor_id, status" },
-      { name: "prescriptions", cols: "id (PK), opd_queue_id (FK), diagnosis, instructions" },
-      { name: "pharmacy_stocks", cols: "id (PK), medicine_name, batch_no, quantity, unit_price" }
+      { name: "patients", cols: "id PK, uhid, name, age, gender, contact, blood_group", desc: "Centralized patient registry table" },
+      { name: "opd_queues", cols: "id PK, patient_id FK, token_no, doctor_id, status", desc: "Daily consultation queue state" },
+      { name: "prescriptions", cols: "id PK, opd_queue_id FK, diagnosis, instructions", desc: "Medical prescription history records" },
+      { name: "pharmacy_stocks", cols: "id PK, medicine_name, batch_no, quantity, unit_price", desc: "Inventory tracking table" }
     ]
   }
 };
@@ -465,13 +469,34 @@ function populateModal(data) {
   ).join('');
 
   const erdList = document.getElementById('modal-erd-list');
+  const erdDetailPanel = document.getElementById('erd-detail-panel');
+
   if (erdList && data.erd) {
     erdList.innerHTML = data.erd.map(table => `
-      <div class="p-3 rounded border border-white/10 bg-[#060709] font-mono text-xs">
-        <span class="text-[#00F0FF] font-bold block mb-1">TABLE // ${table.name}</span>
-        <span class="text-slate-400">${table.cols}</span>
+      <div data-erd-table="${table.name}" class="p-3.5 rounded border border-white/10 bg-[#060709] hover:border-[#00F0FF]/50 cursor-pointer transition-all font-mono text-xs group">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[#00F0FF] font-bold group-hover:underline">TABLE // ${table.name}</span>
+          <span class="text-[10px] text-slate-500">CLICK TO INSPECT</span>
+        </div>
+        <div class="text-slate-400 text-[11px] leading-relaxed">${table.cols}</div>
       </div>
     `).join('');
+
+    // Table click inspection handler
+    erdList.querySelectorAll('[data-erd-table]').forEach(el => {
+      el.addEventListener('click', () => {
+        const tableName = el.getAttribute('data-erd-table');
+        const match = data.erd.find(t => t.name === tableName);
+        if (match && erdDetailPanel) {
+          erdDetailPanel.classList.remove('hidden');
+          erdDetailPanel.innerHTML = `
+            <div class="text-xs font-mono text-[#00F0FF] font-bold mb-1">INSPECTED TABLE: ${match.name.toUpperCase()}</div>
+            <div class="text-xs text-slate-300 font-mono mb-1.5">Columns: ${match.cols}</div>
+            <div class="text-xs text-slate-400 font-sans">${match.desc}</div>
+          `;
+        }
+      });
+    });
   }
 
   const ghBtn = document.getElementById('modal-github-btn');
@@ -565,7 +590,7 @@ function initSkillsInspector() {
   });
 }
 
-/* 11. System Architecture Inspector & Interactive Simulator */
+/* 11. System Architecture Inspector & Simulation Controls */
 const archNodes = {
   client: {
     title: "01 // Client Browser",
@@ -633,21 +658,45 @@ function initArchitectureInspector() {
 }
 
 function initArchitectureSimulator() {
-  const simBtn = document.getElementById('run-arch-sim');
+  const simAdmissionBtn = document.getElementById('sim-admission');
+  const simHealthBtn = document.getElementById('sim-health');
+  const resetBtn = document.getElementById('sim-reset');
+
+  const methodEl = document.getElementById('insp-method');
+  const routeEl = document.getElementById('insp-route');
+  const controllerEl = document.getElementById('insp-controller');
+  const modelEl = document.getElementById('insp-model');
+  const dbEl = document.getElementById('insp-db');
+  const statusEl = document.getElementById('insp-status');
   const simLog = document.getElementById('arch-sim-log');
-  if (!simBtn || !simLog) return;
+
+  if (!simAdmissionBtn || !simLog) return;
 
   const steps = ['client', 'vite', 'router', 'controller', 'eloquent', 'database'];
   let isSimulating = false;
 
-  simBtn.addEventListener('click', () => {
+  const runSimulation = (scenario) => {
     if (isSimulating) return;
     isSimulating = true;
-    simBtn.disabled = true;
-    simBtn.innerHTML = `<span class="animate-spin inline-block">⚙</span> RUNNING SIMULATION...`;
+
+    if (scenario === 'admission') {
+      if (methodEl) methodEl.textContent = 'POST';
+      if (routeEl) routeEl.textContent = '/admission/submit';
+      if (controllerEl) controllerEl.textContent = 'AdmissionController@store';
+      if (modelEl) modelEl.textContent = 'Applicant / Application';
+      if (dbEl) dbEl.textContent = 'MySQL (InnoDB Transaction)';
+      if (statusEl) statusEl.textContent = '200 OK (0.024s)';
+    } else {
+      if (methodEl) methodEl.textContent = 'POST';
+      if (routeEl) routeEl.textContent = '/phc/opd-token';
+      if (controllerEl) controllerEl.textContent = 'OpdQueueController@generate';
+      if (modelEl) modelEl.textContent = 'Patient / OpdQueue';
+      if (dbEl) dbEl.textContent = 'MySQL (Indexed Search)';
+      if (statusEl) statusEl.textContent = '201 Created (0.018s)';
+    }
 
     let i = 0;
-    simLog.innerHTML = `<span class="text-[#00F0FF]">SIMULATION INITIALIZED //</span> Executing Request Trace...<br>`;
+    simLog.innerHTML = `<span class="text-[#00F0FF]">FRONTEND ARCHITECTURE SIMULATION INITIALIZED //</span> Scenario: ${scenario.toUpperCase()}<br>`;
 
     const interval = setInterval(() => {
       if (i < steps.length) {
@@ -656,20 +705,27 @@ function initArchitectureSimulator() {
         if (node) {
           node.click();
           node.classList.add('pulse-glow');
-          setTimeout(() => node.classList.remove('pulse-glow'), 600);
+          setTimeout(() => node.classList.remove('pulse-glow'), 500);
         }
-        simLog.innerHTML += `<span class="text-emerald-400">Step 0${i + 1}:</span> ${archNodes[key].title} [OK]<br>`;
+        simLog.innerHTML += `<span class="text-emerald-400">Step 0${i + 1}:</span> ${archNodes[key].title} [ACTIVE]<br>`;
         simLog.scrollTop = simLog.scrollHeight;
         i++;
       } else {
         clearInterval(interval);
-        simLog.innerHTML += `<span class="text-[#00F0FF]">✔ REQUEST TRACE COMPLETE //</span> Response 200 OK (0.024s)<br>`;
-        simBtn.disabled = false;
-        simBtn.innerHTML = `▶ SIMULATE REQUEST TRACE`;
+        simLog.innerHTML += `<span class="text-[#00F0FF]">✔ REQUEST TRACE COMPLETE //</span> Response Packet Returned Successfully.<br>`;
         isSimulating = false;
       }
-    }, 600);
-  });
+    }, 550);
+  };
+
+  simAdmissionBtn.addEventListener('click', () => runSimulation('admission'));
+  if (simHealthBtn) simHealthBtn.addEventListener('click', () => runSimulation('healthcare'));
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      simLog.innerHTML = `Ready for simulation. Select a trigger button above.`;
+      if (statusEl) statusEl.textContent = 'READY';
+    });
+  }
 }
 
 /* 12. Magnetic Button Effect */
@@ -730,7 +786,7 @@ function initContactForm() {
   });
 }
 
-/* 14. Artisan Terminal CLI Engine */
+/* 14. Artisan Terminal CLI Engine with History & Autocomplete */
 function initArtisanTerminal() {
   const terminal = document.getElementById('artisan-terminal');
   const input = document.getElementById('term-input');
@@ -739,6 +795,9 @@ function initArtisanTerminal() {
   const triggers = document.querySelectorAll('[data-open-terminal]');
 
   if (!terminal || !input || !output) return;
+
+  let cmdHistory = [];
+  let historyIdx = -1;
 
   const openTerminal = () => {
     terminal.classList.remove('hidden');
@@ -771,8 +830,25 @@ function initArtisanTerminal() {
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       const cmd = input.value.trim();
+      if (cmd) {
+        cmdHistory.push(cmd);
+        historyIdx = cmdHistory.length;
+      }
       input.value = '';
       executeArtisanCmd(cmd);
+    } else if (e.key === 'ArrowUp') {
+      if (cmdHistory.length > 0 && historyIdx > 0) {
+        historyIdx--;
+        input.value = cmdHistory[historyIdx];
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (cmdHistory.length > 0 && historyIdx < cmdHistory.length - 1) {
+        historyIdx++;
+        input.value = cmdHistory[historyIdx];
+      } else {
+        historyIdx = cmdHistory.length;
+        input.value = '';
+      }
     }
   });
 
@@ -787,14 +863,22 @@ function initArtisanTerminal() {
       return;
     }
 
+    if (lower === 'exit') {
+      closeTerminal();
+      return;
+    }
+
     if (lower === 'help') {
       appendLog(`AVAILABLE ARTISAN COMMANDS:
   php artisan portfolio:about        Display developer background
   php artisan projects:show admission Display admission system specs
-  php artisan projects:show health    Display healthcare PHC specs
+  php artisan projects:show healthcare Display healthcare PHC specs
   php artisan skills:inspect laravel  Inspect Laravel 12 core stack
-  php artisan contact:send           Jump to direct transmission form
-  clear                              Clear terminal buffer`, 'text-slate-300');
+  php artisan skills:inspect mysql    Inspect MySQL database engine
+  php artisan architecture:simulate   Jump to architecture simulator
+  help                               Show this command guide
+  clear                              Clear terminal buffer
+  exit                               Close CLI terminal`, 'text-slate-300');
       return;
     }
 
@@ -807,16 +891,32 @@ Location: Pune, MH, India`, 'text-emerald-400');
       appendLog(`[PROJECT 001] College Admission Management System
 Stack: Laravel 12, Eloquent ORM, MySQL, Blade
 Workflow: Multi-stage application form, officer verification state machine, automated merit rank engine.`, 'text-[#00F0FF]');
-    } else if (lower.includes('projects:show health')) {
+    } else if (lower.includes('projects:show healthcare')) {
       appendLog(`[PROJECT 002] Healthcare / PHC Management System
 Stack: Laravel 12, MySQL InnoDB, Blade
 Workflow: OPD patient queue management, clinical records, doctor prescriptions, pharmacy inventory stock deduction.`, 'text-emerald-400');
-    } else if (lower.includes('skills:inspect')) {
-      appendLog(`[SKILL INSPECTION] Laravel 12 Specialist
-Primary framework engine for Eloquent ORM, Artisan CLI, Middleware pipelines, and REST API architecture.`, 'text-cyan-400');
-    } else if (lower.includes('contact:send')) {
+    } else if (lower.includes('skills:inspect laravel')) {
+      appendLog(`Laravel 12
+----------------
+Backend Framework
+Used for:
+- Routing & Middleware
+- Controllers & Form Requests
+- Validation pipelines
+- Eloquent ORM & Relational DB mapping
+- Clean Application Architecture`, 'text-cyan-400');
+    } else if (lower.includes('skills:inspect mysql')) {
+      appendLog(`MySQL 8.0
+----------------
+Database Engine
+Used for:
+- Relational schema design & foreign keys
+- Multi-table transactions
+- Query indexing strategies
+- ACID compliance for critical records`, 'text-amber-400');
+    } else if (lower.includes('architecture:simulate')) {
       closeTerminal();
-      document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('architecture').scrollIntoView({ behavior: 'smooth' });
     } else {
       appendLog(`Command "${cmd}" not recognized. Type "help" for available commands.`, 'text-red-400');
     }
@@ -831,33 +931,59 @@ Primary framework engine for Eloquent ORM, Artisan CLI, Middleware pipelines, an
   }
 }
 
-/* 15. Real-Time Telemetry Monitor */
-function initTelemetryConsole() {
+/* 15. Real Telemetry Console (Uses Real Browser Performance API) */
+function initRealTelemetryConsole() {
   const fpsEl = document.getElementById('telemetry-fps');
-  if (!fpsEl) return;
+  const domPaintEl = document.getElementById('telemetry-dom-paint');
+  const loadEl = document.getElementById('telemetry-load');
 
-  let frameCount = 0;
-  let lastTime = performance.now();
+  // Real Paint Timing API
+  const paintEntries = performance.getEntriesByType('paint');
+  const fp = paintEntries.find(e => e.name === 'first-contentful-paint' || e.name === 'first-paint');
+  if (fp && domPaintEl) {
+    domPaintEl.textContent = `${Math.round(fp.startTime)}ms`;
+  } else if (domPaintEl) {
+    domPaintEl.textContent = 'N/A';
+  }
 
-  function calcFPS() {
-    const now = performance.now();
-    frameCount++;
-    if (now - lastTime >= 1000) {
-      const fps = Math.round((frameCount * 1000) / (now - lastTime));
-      fpsEl.textContent = `${fps} FPS`;
-      frameCount = 0;
-      lastTime = now;
+  // Real Navigation Timing API
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const navEntries = performance.getEntriesByType('navigation');
+      if (navEntries.length && loadEl) {
+        const nav = navEntries[0];
+        const loadTime = Math.round(nav.loadEventEnd - nav.startTime);
+        loadEl.textContent = loadTime > 0 ? `${loadTime}ms` : 'N/A';
+      }
+    }, 100);
+  });
+
+  // Real FPS Counter
+  if (fpsEl) {
+    let frameCount = 0;
+    let lastTime = performance.now();
+
+    function calcFPS() {
+      const now = performance.now();
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        const fps = Math.round((frameCount * 1000) / (now - lastTime));
+        fpsEl.textContent = `${fps} FPS`;
+        frameCount = 0;
+        lastTime = now;
+      }
+      requestAnimationFrame(calcFPS);
     }
     requestAnimationFrame(calcFPS);
   }
-  requestAnimationFrame(calcFPS);
 }
 
-/* 16. Code Snippet Inspector */
+/* 16. Code Snippet Inspector with Why/What/Benefit Explanation Panel */
 function initCodeInspector() {
   const codeTabs = document.querySelectorAll('[data-code-tab]');
   const codeBlock = document.getElementById('code-snippet-block');
   const codeTitle = document.getElementById('code-snippet-title');
+  const expPanel = document.getElementById('code-explanation-panel');
 
   if (!codeTabs.length || !codeBlock) return;
 
@@ -887,7 +1013,13 @@ class StoreApplicantRequest extends FormRequest
             'documents.*'=> ['file', 'mimes:pdf,jpg,png', 'max:2048'],
         ];
     }
-}`
+}`,
+      explanation: `
+        <div class="text-xs font-mono text-[#00F0FF] font-bold mb-1">WHY?</div>
+        <div class="text-xs text-slate-300 font-sans mb-3">Separates validation logic from controllers, keeping request handling clean and single-responsibility compliant.</div>
+        <div class="text-xs font-mono text-emerald-400 font-bold mb-1">BENEFIT?</div>
+        <div class="text-xs text-slate-300 font-sans">Guarantees data integrity before code enters controller logic, preventing invalid submissions or malformed files.</div>
+      `
     },
     transaction: {
       title: "AdmissionSubmitAction.php — DB Transaction",
@@ -915,7 +1047,13 @@ class SubmitApplicationAction
             return $application;
         });
     }
-}`
+}`,
+      explanation: `
+        <div class="text-xs font-mono text-[#00F0FF] font-bold mb-1">WHY?</div>
+        <div class="text-xs text-slate-300 font-sans mb-3">Wraps multiple related database mutations inside an atomic DB transaction block.</div>
+        <div class="text-xs font-mono text-emerald-400 font-bold mb-1">BENEFIT?</div>
+        <div class="text-xs text-slate-300 font-sans">Ensures all-or-nothing execution. If document saving fails, application status rolls back automatically with zero orphaned records.</div>
+      `
     },
     queue: {
       title: "OPDQueueProcessorJob.php — Background Job",
@@ -939,7 +1077,13 @@ class ProcessOpdTokenJob implements ShouldQueue
         
         event(new OpdTokenCalledEvent($this->token));
     }
-}`
+}`,
+      explanation: `
+        <div class="text-xs font-mono text-[#00F0FF] font-bold mb-1">WHY?</div>
+        <div class="text-xs text-slate-300 font-sans mb-3">Offloads queue management events to background queue workers instead of blocking the doctor's browser thread.</div>
+        <div class="text-xs font-mono text-emerald-400 font-bold mb-1">BENEFIT?</div>
+        <div class="text-xs text-slate-300 font-sans">Sub-50ms HTTP response time for doctor consultation intake counters while event listeners execute asynchronously.</div>
+      `
     }
   };
 
@@ -951,6 +1095,7 @@ class ProcessOpdTokenJob implements ShouldQueue
 
       codeTitle.textContent = snippet.title;
       codeBlock.textContent = snippet.code;
+      if (expPanel) expPanel.innerHTML = snippet.explanation;
 
       codeTabs.forEach(t => {
         if (t === tab) {
@@ -965,7 +1110,7 @@ class ProcessOpdTokenJob implements ShouldQueue
   });
 }
 
-/* 17. Developer Theme & Accent Switcher */
+/* 17. Developer Theme & Accent Switcher with localStorage Persistence */
 function initThemeSwitcher() {
   const themeBtns = document.querySelectorAll('[data-theme]');
   const setTheme = (theme) => {
