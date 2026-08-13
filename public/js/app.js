@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  initPreloader();
+  initScrollProgress();
   initNavbarScroll();
   initMobileMenu();
   initScrollSpy();
@@ -8,10 +10,35 @@ document.addEventListener('DOMContentLoaded', () => {
   initMagneticButtons();
   initContactForm();
   initPortraitParallax();
+  initCardTilt();
   initCustomCursor();
   initScrollReveal();
   initPhilosophyHover();
+  initCommandPalette();
 });
+
+/* 0. Preloader Removal */
+function initPreloader() {
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
+  setTimeout(() => {
+    preloader.classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => preloader.remove(), 500);
+  }, 400);
+}
+
+/* 0.1 Scroll Progress Bar */
+function initScrollProgress() {
+  const progressBar = document.getElementById('scroll-progress-bar');
+  if (!progressBar) return;
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = `${scrollPercent}%`;
+  }, { passive: true });
+}
 
 /* 1. Navbar Scroll Compression & Glass Blur */
 function initNavbarScroll() {
@@ -108,7 +135,6 @@ function initPortraitParallax() {
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
 
-    // Restrained 2-4px tilt effect
     const tiltX = (y / (rect.height / 2)) * -3;
     const tiltY = (x / (rect.width / 2)) * 3;
 
@@ -127,34 +153,67 @@ function initPortraitParallax() {
   });
 }
 
-/* 5. Custom Micro Cursor Dot */
-function initCustomCursor() {
+/* 4.1 Card 3D Tilt Effect for Project & Tech Cards */
+function initCardTilt() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const cursor = document.getElementById('custom-cursor');
-  if (!cursor) return;
+  const cards = document.querySelectorAll('[data-tilt]');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      const tiltX = (y / (rect.height / 2)) * -4;
+      const tiltY = (x / (rect.width / 2)) * 4;
+
+      card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-3px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+    });
+  });
+}
+
+/* 5. Custom Dual-Ring Cursor Dot (Disabled on Mobile/Touch) */
+function initCustomCursor() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
+  const dot = document.getElementById('custom-cursor-dot');
+  const ring = document.getElementById('custom-cursor-ring');
+  if (!dot || !ring) return;
 
   let mouseX = -100, mouseY = -100;
-  let cursorX = -100, cursorY = -100;
+  let ringX = -100, ringY = -100;
 
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+    dot.style.left = `${mouseX}px`;
+    dot.style.top = `${mouseY}px`;
   });
 
-  function render() {
-    cursorX += (mouseX - cursorX) * 0.2;
-    cursorY += (mouseY - cursorY) * 0.2;
-    cursor.style.left = `${cursorX}px`;
-    cursor.style.top = `${cursorY}px`;
-    requestAnimationFrame(render);
+  function renderRing() {
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+    ring.style.left = `${ringX}px`;
+    ring.style.top = `${ringY}px`;
+    requestAnimationFrame(renderRing);
   }
-  requestAnimationFrame(render);
+  requestAnimationFrame(renderRing);
 
-  const interactiveElements = document.querySelectorAll('a, button, input, textarea, [data-skill], [data-arch-node], [data-magnetic]');
-  interactiveElements.forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  const hoverTargets = document.querySelectorAll('a, button, input, textarea, [data-skill], [data-arch-node], [data-magnetic], [data-tilt], [data-open-case-study]');
+  hoverTargets.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.classList.add('w-12', 'h-12', 'bg-[#00F0FF]/10', 'border-[#00F0FF]');
+      ring.classList.remove('w-8', 'h-8', 'border-white/30');
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.classList.remove('w-12', 'h-12', 'bg-[#00F0FF]/10', 'border-[#00F0FF]');
+      ring.classList.add('w-8', 'h-8', 'border-white/30');
+    });
   });
 }
 
@@ -201,7 +260,74 @@ function initPhilosophyHover() {
   });
 }
 
-/* 8. Case Study Modal System */
+/* 8. Command Palette (Ctrl + K) */
+function initCommandPalette() {
+  const palette = document.getElementById('command-palette');
+  const input = document.getElementById('cmd-input');
+  const items = document.querySelectorAll('.cmd-item');
+  const closeBtn = document.getElementById('cmd-close');
+  const triggers = document.querySelectorAll('[data-open-cmd]');
+
+  if (!palette || !input) return;
+
+  const openCmd = () => {
+    palette.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    setTimeout(() => input.focus(), 50);
+  };
+
+  const closeCmd = () => {
+    palette.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+    input.value = '';
+    filterItems('');
+  };
+
+  triggers.forEach(t => t.addEventListener('click', openCmd));
+  if (closeBtn) closeBtn.addEventListener('click', closeCmd);
+
+  palette.addEventListener('click', (e) => {
+    if (e.target === palette || e.target.id === 'cmd-backdrop') closeCmd();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      palette.classList.contains('hidden') ? openCmd() : closeCmd();
+    } else if (e.key === 'Escape' && !palette.classList.contains('hidden')) {
+      closeCmd();
+    }
+  });
+
+  const filterItems = (query) => {
+    const q = query.toLowerCase().trim();
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(q)) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  };
+
+  input.addEventListener('input', (e) => filterItems(e.target.value));
+
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      const targetId = item.getAttribute('data-target');
+      closeCmd();
+      if (targetId) {
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+}
+
+/* 9. Case Study Modal System */
 const caseStudyData = {
   college: {
     title: "College Admission Management System",
@@ -325,7 +451,7 @@ function populateModal(data) {
   if (ghBtn) ghBtn.href = data.github;
 }
 
-/* 9. Interactive Capability Map (Skills Inspector) */
+/* 10. Interactive Capability Map (Skills Inspector) */
 const skillDetails = {
   laravel: {
     name: "Laravel 12",
@@ -396,7 +522,7 @@ function initSkillsInspector() {
     inspectorUsage.textContent = detail.usage;
 
     buttons.forEach(b => {
-      if (b.getAttribute('data-[#00F0FF]') === key || b.getAttribute('data-skill') === key) {
+      if (b.getAttribute('data-skill') === key) {
         b.classList.add('border-[#00F0FF]', 'bg-[#00F0FF]/10', 'text-white');
         b.classList.remove('border-white/10', 'text-slate-300');
       } else {
@@ -412,12 +538,12 @@ function initSkillsInspector() {
   });
 }
 
-/* 10. System Architecture Inspector */
+/* 11. System Architecture Inspector */
 const archNodes = {
   client: {
     title: "01 // Client Browser",
     tech: "HTML5 / Tailwind / Vanilla JS",
-    detail: "Initial HTTP Request sent via TLS 1.3. Returns server-side rendered Blade HTML with optimized Vite assets, achieving instant DOM paint and 95+ Lighthouse score."
+    detail: "Initial HTTP Request sent via TLS 1.3. Serves responsive DOM with optimized Vite assets, achieving instant DOM paint and 95+ Lighthouse score."
   },
   vite: {
     title: "02 // Vite Asset Pipeline",
@@ -479,7 +605,7 @@ function initArchitectureInspector() {
   });
 }
 
-/* 11. Magnetic Button Effect */
+/* 12. Magnetic Button Effect */
 function initMagneticButtons() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -499,7 +625,7 @@ function initMagneticButtons() {
   });
 }
 
-/* 12. Contact Form Feedback */
+/* 13. Contact Form Feedback */
 function initContactForm() {
   const form = document.getElementById('contact-form');
   const statusMsg = document.getElementById('form-status-msg');
