@@ -55,5 +55,8 @@ $_SERVER['SCRIPT_FILENAME'] = __DIR__ . '/../public/index.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
+// Set storage path to writable /tmp directory on Vercel
+$app->useStoragePath($tmpStorage);
+
 // 5. Handle HTTP Request
 $app->handleRequest(Request::capture());

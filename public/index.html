@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sourabh Panhale — PHP & Laravel Developer specializing in clean software architecture, relational database design, and maintainable web applications.">
+    <meta name="keywords" content="Sourabh Panhale, Laravel Developer, PHP Developer, Full-Stack PHP, MySQL, Tailwind CSS, Pune Developer">
+    <meta name="author" content="Sourabh Panhale">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sourabh-panhale.vercel.app">
+    <meta property="og:title" content="Sourabh Panhale — PHP / Laravel Developer">
+    <meta property="og:description" content="Building thoughtful, reliable web systems with Laravel and modern PHP.">
+    <meta property="og:image" content="/images/sourabh-portrait.png">
+
+    <title>Sourabh Panhale — PHP / Laravel Developer</title>
+
+    <!-- Preconnect Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'tech-bg': '#060709',
+                        'tech-surface': '#0C0E12',
+                        'tech-hover': '#14171E',
+                        'tech-cyan': '#00F0FF',
+                        'tech-emerald': '#00E599',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Dark Technical Design System Styles -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+            background-color: #060709;
+            color: #F8FAFC;
+            color-scheme: dark;
+        }
+
+        body {
+            background-color: #060709;
+            color: #F8FAFC;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: #00F0FF;
+            color: #000000;
+        }
+
+        /* Subtle Custom Micro Cursor */
+        #custom-cursor {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            background-color: #00F0FF;
+            border-radius: 50%;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+            opacity: 0;
+        }
+
+        body:hover #custom-cursor {
+            opacity: 0.85;
+        }
+
+        .cursor-hover #custom-cursor {
+            width: 28px;
+            height: 28px;
+            background-color: rgba(0, 240, 255, 0.15);
+            border: 1px solid #00F0FF;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060709;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E232D;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
+        }
+
+        /* Spatial Background Technical Grid with Radial Mask */
+        .bg-tech-grid {
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse at 50% 30%, black 50%, transparent 95%);
+            -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 50%, transparent 95%);
+        }
+
+        .bg-radial-glow {
+            background: radial-gradient(circle at 50% 15%, rgba(0, 240, 255, 0.06) 0%, transparent 55%);
+        }
+
+        /* Fine Glass Card */
+        .tech-card {
+            background-color: #0C0E12;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tech-card:hover {
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 0 24px -6px rgba(0, 240, 255, 0.12);
+        }
+
+        /* Pulse glow */
+        .pulse-glow {
+            box-shadow: 0 0 12px #00F0FF;
+        }
+
+        /* Scroll Reveal Utility - 100% Always Visible Override */
+        .reveal-on-scroll {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        /* Background Noise Overlay */
+        .bg-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+        }
+
+        *:focus-visible {
+            outline: 2px solid #00F0FF;
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            #custom-cursor {
+                display: none !important;
+            }
+            .reveal-on-scroll {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#060709] text-[#F8FAFC] font-sans selection:bg-[#00F0FF] selection:text-black antialiased relative min-h-screen">
+    
+    <!-- Micro Cursor Dot -->
+    <div id="custom-cursor"></div>
+
+    <!-- Accessibility Skip Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 px-4 py-2 bg-[#00F0FF] text-black font-mono font-bold rounded shadow-lg">
+        Skip to main content
+    </a>
+
+    <!-- Subtle Technical Background Grid & Ambient Glow -->
+    <div class="fixed inset-0 bg-tech-grid opacity-75 pointer-events-none z-0"></div>
+    <div class="fixed inset-0 bg-radial-glow pointer-events-none z-0"></div>
+    <div class="fixed inset-0 bg-noise pointer-events-none z-0"></div>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+        
+        <!-- Navbar -->
+        <header id="main-navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 py-5 border-b border-transparent">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                
+                <!-- Brand / Identity -->
+                <a href="#hero" class="group flex items-center gap-3 text-sm font-mono tracking-tight text-white focus:outline-none">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#00F0FF] pulse-glow group-hover:scale-125 transition-transform duration-300"></span>
+                    <span class="font-bold tracking-wider text-white group-hover:text-[#00F0FF] transition-colors">SOURABH PANHALE</span>
+                    <span class="hidden sm:inline-block text-slate-400 text-xs">// PHP & LARAVEL</span>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center space-x-8 text-xs font-mono tracking-wider" aria-label="Main Navigation">
+                    <a href="#hero" class="nav-link text-slate-400 hover:text-[#00F0FF] transition-colors flex items-center gap-1.5 py-1">
+                        <span class="nav-dot w-1.5 h-1.5 rounded-full bg-[#00F0FF] opacity-0 transition-opacity"></span>
+                        <span class="text-slate-400">01</span> HOME
+                    </a>
+                    <a href="#about" class="nav-link text-slate-400 hover:text-[#00F0FF] transition-colors flex items-center gap-1.5 py-1">
+                        <span class="nav-dot w-1.5 h-1.5 rounded-full bg-[#00F0FF] opacity-0 transition-opacity"></span>
+                        <span class="text-slate-400">02</span> ABOUT
+                    </a>
+                    <a href="#experience" class="nav-link text-slate-400 hover:text-[#00F0FF] transition-colors flex items-center gap-1.5 py-1">
+                        <span class="nav-dot w-1.5 h-1.5 rounded-full bg-[#00F0FF] opacity-0 transition-opacity"></span>
+                        <span class="text-slate-400">03</span> EXPERIENCE
+                    </a>
+                    <a href="#projects" class="nav-link text-slate-400 hover:text-[#00F0FF] transition-colors flex items-center gap-1.5 py-1">
+                        <span class="nav-dot w-1.5 h-1.5 rounded-full bg-[#00F0FF] opacity-0 transition-opacity"></span>
+                        <span class="text-slate-400">04</span> PROJECTS
+                    </a>
+                    <a href="#contact" class="nav-link text-slate-400 hover:text-[#00F0FF] transition-colors flex items-center gap-1.5 py-1">
+                        <span class="nav-dot w-1.5 h-1.5 rounded-full bg-[#00F0FF] opacity-0 transition-opacity"></span>
+                        <span class="text-slate-400">05</span> CONTACT
+                    </a>
+                </nav>
+
+                <!-- Availability Status Badge -->
+                <div class="hidden sm:flex items-center gap-4">
+                    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0D0F12] border border-white/15 text-xs font-mono text-slate-300">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span class="text-emerald-400 font-semibold">Available for opportunities</span>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Trigger Button -->
+                <button id="mobile-menu-btn" 
+                        type="button" 
+                        class="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 focus:outline-none border border-white/15"
+                        aria-label="Toggle navigation menu"
+                        aria-expanded="false">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation Drawer -->
+            <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-[#060709]/98 backdrop-blur-xl flex flex-col justify-between p-6 border-b border-white/10">
+                <div class="flex items-center justify-between pb-6 border-b border-white/10">
+                    <div class="flex items-center gap-2.5 text-sm font-mono text-white font-bold">
+                        <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                        <span>SOURABH PANHALE</span>
+                    </div>
+                    <button id="mobile-menu-close" 
+                            class="p-2 text-slate-400 hover:text-white rounded-lg focus:outline-none"
+                            aria-label="Close menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="flex flex-col space-y-6 my-auto text-lg font-mono">
+                    <a href="#hero" class="text-slate-300 hover:text-[#00F0FF] transition-colors flex items-center gap-4">
+                        <span class="text-xs text-[#00F0FF]">01</span> HOME
+                    </a>
+                    <a href="#about" class="text-slate-300 hover:text-[#00F0FF] transition-colors flex items-center gap-4">
+                        <span class="text-xs text-[#00F0FF]">02</span> ABOUT
+                    </a>
+                    <a href="#experience" class="text-slate-300 hover:text-[#00F0FF] transition-colors flex items-center gap-4">
+                        <span class="text-xs text-[#00F0FF]">03</span> EXPERIENCE
+                    </a>
+                    <a href="#projects" class="text-slate-300 hover:text-[#00F0FF] transition-colors flex items-center gap-4">
+                        <span class="text-xs text-[#00F0FF]">04</span> PROJECTS
+                    </a>
+                    <a href="#contact" class="text-slate-300 hover:text-[#00F0FF] transition-colors flex items-center gap-4">
+                        <span class="text-xs text-[#00F0FF]">05</span> CONTACT
+                    </a>
+                </nav>
+
+                <div class="pt-6 border-t border-white/10 flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-xs font-mono text-emerald-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Available for opportunities</span>
+                    </div>
+                    <a href="mailto:sourabh.panhale.dev@gmail.com" class="w-full text-center py-3 bg-[#00F0FF] text-black font-mono font-bold text-xs uppercase tracking-wider rounded">
+                        Get In Touch
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-grow">
+            
+            <!-- Hero Section -->
+            <section id="hero" class="relative pt-32 pb-16 md:pt-44 md:pb-24 border-b border-white/10 overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center mb-16">
+                        
+                        <!-- Left Editorial Text Content (Column 1-7) -->
+                        <div class="lg:col-span-7 flex flex-col items-start z-10">
+                            
+                            <!-- Technical Eyebrow -->
+                            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded border border-[#00F0FF]/30 bg-[#00F0FF]/10 text-[#00F0FF] text-[11px] font-mono tracking-widest uppercase mb-6 shadow-sm">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#00F0FF] animate-pulse"></span>
+                                <span>PHP / LARAVEL / FULL-STACK DEVELOPMENT</span>
+                            </div>
+
+                            <!-- Primary Headline -->
+                            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
+                                Building <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-[#00F0FF]">thoughtful web systems</span> with Laravel.
+                            </h1>
+
+                            <!-- Secondary Copy -->
+                            <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl mb-8">
+                                PHP / Laravel Developer focused on building reliable, maintainable and practical web applications. Crafting structured databases, clean REST APIs, and scalable backend workflows.
+                            </p>
+
+                            <!-- Action Buttons & Micro-Interactions -->
+                            <div class="flex flex-wrap items-center gap-4 mb-12">
+                                <a href="#projects" 
+                                   data-magnetic
+                                   class="group px-6 py-3.5 bg-[#00F0FF] text-black font-mono font-bold text-xs uppercase tracking-wider rounded border border-[#00F0FF] hover:bg-[#00F0FF]/90 hover:shadow-[0_0_25px_rgba(0,240,255,0.4)] transition-all duration-200 flex items-center gap-2.5">
+                                    <span>VIEW SELECTED WORK</span>
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/>
+                                    </svg>
+                                </a>
+
+                                <a href="mailto:sourabh.panhale.dev@gmail.com" 
+                                   data-magnetic
+                                   class="group px-6 py-3.5 bg-[#0D0F12] text-slate-200 font-mono font-medium text-xs uppercase tracking-wider rounded border border-white/15 hover:border-[#00F0FF]/50 hover:text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-[#00F0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                                    </svg>
+                                    <span>DOWNLOAD RESUME</span>
+                                </a>
+                            </div>
+
+                            <!-- Editorial Social Links Bar -->
+                            <div class="pt-6 border-t border-white/10 w-full flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-400">
+                                <div class="flex items-center space-x-6">
+                                    <a href="https://github.com/sourabh-panhale" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-1 hover:text-[#00F0FF] transition-colors">
+                                        <span class="underline decoration-slate-600 group-hover:decoration-[#00F0FF] underline-offset-4">GITHUB</span>
+                                        <span class="text-slate-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200">↗</span>
+                                    </a>
+                                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-1 hover:text-[#00F0FF] transition-colors">
+                                        <span class="underline decoration-slate-600 group-hover:decoration-[#00F0FF] underline-offset-4">LINKEDIN</span>
+                                        <span class="text-slate-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200">↗</span>
+                                    </a>
+                                    <a href="mailto:sourabh.panhale.dev@gmail.com" class="group flex items-center gap-1 hover:text-[#00F0FF] transition-colors">
+                                        <span class="underline decoration-slate-600 group-hover:decoration-[#00F0FF] underline-offset-4">EMAIL</span>
+                                        <span class="text-slate-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200">↗</span>
+                                    </a>
+                                </div>
+                                <div class="text-slate-500 hidden sm:block">
+                                    SYS / 01 // STACK: LARAVEL 12
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Right Technical Portrait Frame -->
+                        <div class="lg:col-span-5 relative flex justify-center lg:justify-end z-10">
+                            
+                            <div id="hero-portrait-card" class="relative w-full max-w-sm sm:max-w-md group transition-all duration-300">
+                                
+                                <!-- Frame Outer Subtle Glow -->
+                                <div class="absolute -inset-1 bg-gradient-to-r from-[#00F0FF]/30 via-white/10 to-[#00E599]/30 rounded-xl blur-sm opacity-40 group-hover:opacity-100 transition duration-500"></div>
+
+                                <!-- Inner Frame Box -->
+                                <div class="relative bg-[#0C0E12] border border-white/15 rounded-xl p-3.5 shadow-2xl overflow-hidden">
+                                    
+                                    <!-- Top Metadata Header -->
+                                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-[10px] font-mono text-slate-400 tracking-wider">
+                                        <span class="flex items-center gap-1.5 text-white font-medium">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#00F0FF] pulse-glow"></span>
+                                            PORTRAIT / 001
+                                        </span>
+                                        <span>ENGINEERING // CORE</span>
+                                        <span class="text-emerald-400 font-semibold">STATUS / ONLINE</span>
+                                    </div>
+
+                                    <!-- Portrait Image Container -->
+                                    <div class="relative aspect-[4/5] rounded-lg overflow-hidden bg-[#060709] border border-white/10">
+                                        <img src="/images/sourabh-portrait.png" 
+                                             alt="Sourabh Panhale — PHP / Laravel Developer" 
+                                             class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-700 transform"
+                                             loading="eager" />
+
+                                        <!-- Fine Crosshair Corner Markers -->
+                                        <div class="absolute top-3 left-3 text-[#00F0FF] font-mono text-xs opacity-75 group-hover:opacity-100 transition-opacity">+</div>
+                                        <div class="absolute top-3 right-3 text-[#00F0FF] font-mono text-xs opacity-75 group-hover:opacity-100 transition-opacity">+</div>
+                                        <div class="absolute bottom-3 left-3 text-[#00F0FF] font-mono text-xs opacity-75 group-hover:opacity-100 transition-opacity">+</div>
+                                        <div class="absolute bottom-3 right-3 text-[#00F0FF] font-mono text-xs opacity-75 group-hover:opacity-100 transition-opacity">+</div>
+
+                                        <!-- Bottom Floating Micro Badge -->
+                                        <div class="absolute bottom-3 left-3 right-3 bg-[#060709]/90 backdrop-blur-md p-3 rounded-lg border border-white/15 flex items-center justify-between text-[11px] font-mono shadow-xl">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse"></span>
+                                                <span class="text-white font-medium">Laravel 12 Specialist</span>
+                                            </div>
+                                            <span class="text-slate-400 text-[10px]">PUNE, IN</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Technical Footer Bar -->
+                                    <div class="flex items-center justify-between pt-3 mt-3 text-[10px] font-mono text-slate-400">
+                                        <span>STACK / PHP · MYSQL</span>
+                                        <span>UTC +5:30</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Lower Hero Negative Space Intentional Metadata Bar -->
+                    <div class="pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-slate-500">
+                        <div class="flex items-center gap-4">
+                            <span class="text-[#00F0FF]">01 / INTRODUCTION</span>
+                            <span class="text-slate-700">|</span>
+                            <span>LAT 18.5204° N // LON 73.8567° E</span>
+                        </div>
+                        <a href="#about" class="flex items-center gap-2 text-slate-400 hover:text-[#00F0FF] transition-colors">
+                            <span>[ SCROLL TO EXPLORE ↓ ]</span>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="py-24 border-b border-white/10 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start reveal-on-scroll">
+                        
+                        <!-- Left Column: Section Indicator -->
+                        <div class="lg:col-span-3">
+                            <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase mb-3">
+                                <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                                <span>01 / ABOUT</span>
+                            </div>
+                            <h3 class="text-xs font-mono text-slate-500 uppercase tracking-widest">
+                                BACKGROUND & INTENT
+                            </h3>
+                        </div>
+
+                        <!-- Center Column: Main Headline Statement -->
+                        <div class="lg:col-span-4">
+                            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                                I build with <span class="text-[#00F0FF]">curiosity</span> and structural precision.
+                            </h2>
+                            <div class="w-12 h-1 bg-[#00F0FF] rounded-full my-6"></div>
+                            <p class="text-slate-400 text-xs font-mono leading-relaxed border-l-2 border-white/15 pl-4">
+                                "Software engineering is not just about writing code that runs; it is about building software systems that remain understandable, extensible, and resilient over time."
+                            </p>
+                        </div>
+
+                        <!-- Right Column: Narrative & Technical Pillars -->
+                        <div class="lg:col-span-5 space-y-6 lg:pl-6 lg:border-l lg:border-white/10">
+                            <div class="text-slate-300 text-sm sm:text-base leading-relaxed space-y-4 font-normal">
+                                <p>
+                                    I am a PHP / Laravel Developer focused on building clean, practical web applications. My development philosophy centers around clear architectural separation, robust database design, and predictable backend behaviors.
+                                </p>
+                                <p>
+                                    Whether modeling multi-stage workflows for admission portals or engineering patient record management systems for healthcare centers, I prioritize maintainability over shortcuts and clarity over cleverness.
+                                </p>
+                            </div>
+
+                            <!-- 3 Pillars Line Breakdown -->
+                            <div class="pt-6 border-t border-white/10 space-y-3 font-mono text-xs">
+                                <div class="flex items-center justify-between p-3 rounded bg-[#0C0E12] border border-white/10">
+                                    <span class="text-white font-medium">Laravel Ecosystem</span>
+                                    <span class="text-[#00F0FF]">EFFICIENT SSR</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded bg-[#0C0E12] border border-white/10">
+                                    <span class="text-white font-medium">Relational Data Integrity</span>
+                                    <span class="text-emerald-400">MYSQL INNODB</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded bg-[#0C0E12] border border-white/10">
+                                    <span class="text-white font-medium">Modern Frontend Architecture</span>
+                                    <span class="text-purple-400">TAILWIND CSS</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Engineering Philosophy Section -->
+            <section id="philosophy" class="py-24 border-b border-white/10 relative bg-[#080A0D]/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex items-center justify-between mb-12 reveal-on-scroll">
+                        <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase">
+                            <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                            <span>02 / ENGINEERING PHILOSOPHY</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500 hidden sm:inline-block">CORE CODE DISCIPLINE</span>
+                    </div>
+
+                    <div class="mb-14 reveal-on-scroll">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                            How I think about <span class="text-[#00F0FF]">software architecture</span>.
+                        </h2>
+                        <p class="text-slate-400 text-sm max-w-2xl mt-3 font-mono">
+                            Practical engineering guidelines that shape how I structure database queries, backend logic, and frontend components.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-on-scroll">
+                        
+                        <!-- Principle 01 -->
+                        <div class="philosophy-item tech-card p-8 rounded-xl border border-white/10 bg-[#0C0E12] relative group transition-all duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-3xl font-extrabold font-mono text-[#00F0FF]">01</span>
+                                <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/20 uppercase">READABILITY</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3 group-hover:text-[#00F0FF] transition-colors">
+                                Clarity over cleverness
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Code is read far more often than it is written. Explicit method signatures, descriptive variable names, and clear domain boundaries prevent subtle bugs and reduce cognitive overhead for future maintainers.
+                            </p>
+                        </div>
+
+                        <!-- Principle 02 -->
+                        <div class="philosophy-item tech-card p-8 rounded-xl border border-white/10 bg-[#0C0E12] relative group transition-all duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-3xl font-extrabold font-mono text-emerald-400">02</span>
+                                <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">DOMAIN FIRST</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
+                                Build for the real problem
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Avoid premature abstraction and micro-optimization. Analyze operational bottlenecks first, understand the domain constraints, and engineer software that directly solves business objectives.
+                            </p>
+                        </div>
+
+                        <!-- Principle 03 -->
+                        <div class="philosophy-item tech-card p-8 rounded-xl border border-white/10 bg-[#0C0E12] relative group transition-all duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-3xl font-extrabold font-mono text-purple-400">03</span>
+                                <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase">TRANSPARENCY</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
+                                Make complexity visible
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Complex operations should not hide behind opaque magic. Database migrations, validation rules, state transitions, and third-party integrations should be explicitly declared and easily traceable.
+                            </p>
+                        </div>
+
+                        <!-- Principle 04 -->
+                        <div class="philosophy-item tech-card p-8 rounded-xl border border-white/10 bg-[#0C0E12] relative group transition-all duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-3xl font-extrabold font-mono text-amber-400">04</span>
+                                <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase">CRAFT</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">
+                                Keep improving
+                            </h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Software engineering requires continuous learning. Regularly refactoring legacy controllers, upgrading PHP/Laravel dependencies, and adopting modern toolings ensure long-term application health.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="py-24 border-b border-white/10 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase mb-4 reveal-on-scroll">
+                        <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                        <span>03 / CAPABILITY MAP & TOOLING</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start reveal-on-scroll">
+                        
+                        <!-- Left Selectors -->
+                        <div class="lg:col-span-7 space-y-8">
+                            
+                            <div>
+                                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                                    Technical Capability Map
+                                </h2>
+                                <p class="text-slate-400 text-sm font-mono">
+                                    Select or hover over any technology node to inspect project implementation context.
+                                </p>
+                            </div>
+
+                            <!-- Backend Category -->
+                            <div class="space-y-3">
+                                <div class="text-xs font-mono text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#00F0FF]"></span>
+                                    <span>BACKEND & FRAMEWORK</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <button type="button" data-skill="laravel" class="px-4 py-2.5 rounded-lg border border-[#00F0FF] bg-[#00F0FF]/10 text-white font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>Laravel 12</span>
+                                        <span class="text-[#00F0FF] text-[10px]">CORE</span>
+                                    </button>
+                                    <button type="button" data-skill="php" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>PHP 8.3+</span>
+                                    </button>
+                                    <button type="button" data-skill="rest" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>REST APIs</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Database Category -->
+                            <div class="space-y-3">
+                                <div class="text-xs font-mono text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    <span>DATABASE LAYER</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <button type="button" data-skill="mysql" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>MySQL 8.0</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Frontend Category -->
+                            <div class="space-y-3">
+                                <div class="text-xs font-mono text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                                    <span>FRONTEND & STYLING</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <button type="button" data-skill="blade" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>Blade Templating</span>
+                                    </button>
+                                    <button type="button" data-skill="tailwind" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>Tailwind CSS v4</span>
+                                    </button>
+                                    <button type="button" data-skill="js" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>JavaScript (ES6+)</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Tooling Category -->
+                            <div class="space-y-3">
+                                <div class="text-xs font-mono text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                    <span>DEVELOPER TOOLING</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <button type="button" data-skill="git" class="px-4 py-2.5 rounded-lg border border-white/10 bg-[#0C0E12] text-slate-300 font-mono text-xs hover:border-[#00F0FF] transition-all flex items-center gap-2">
+                                        <span>Git & GitHub</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Right Inspector Console -->
+                        <div class="lg:col-span-5 w-full">
+                            <div class="tech-card p-6 rounded-xl border border-white/15 bg-[#0C0E12] shadow-2xl relative sticky top-28">
+                                
+                                <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                                    <span class="text-[10px] font-mono text-slate-400 tracking-wider">CAPABILITY_INSPECTOR v1.2</span>
+                                    <span id="skill-inspector-cat" class="px-2 py-0.5 text-[10px] font-mono rounded bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/20">
+                                        Backend Framework
+                                    </span>
+                                </div>
+
+                                <h3 id="skill-inspector-name" class="text-2xl font-extrabold text-white mb-3">
+                                    Laravel 12
+                                </h3>
+
+                                <div class="space-y-4 text-xs font-mono">
+                                    <div>
+                                        <span class="text-slate-500 block mb-1">SPECIFICATION //</span>
+                                        <p id="skill-inspector-desc" class="text-slate-300 leading-relaxed font-sans text-sm">
+                                            Primary backend engine for building scalable web applications, Eloquent data models, artisan CLI, service providers, and REST API architectures.
+                                        </p>
+                                    </div>
+
+                                    <div class="pt-4 border-t border-white/10">
+                                        <span class="text-slate-500 block mb-1">PROJECT USAGE //</span>
+                                        <p id="skill-inspector-usage" class="text-slate-300 leading-relaxed font-sans text-xs">
+                                            Core stack used in custom web systems. Deep experience with Blade, Service Layer, Middleware, Form Validation, and ORM query optimizations.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                                    <span>STATUS: ACTIVE SPECIALIZATION</span>
+                                    <span class="text-emerald-400">VERIFIED</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Experience Section -->
+            <section id="experience" class="py-24 border-b border-white/10 relative bg-[#080A0D]/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase mb-4 reveal-on-scroll">
+                        <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                        <span>04 / PROFESSIONAL EXPERIENCE</span>
+                    </div>
+
+                    <div class="mb-12 reveal-on-scroll">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                            Where I've been <span class="text-[#00F0FF]">building & engineering</span>.
+                        </h2>
+                        <p class="text-slate-400 text-sm max-w-2xl mt-3 font-mono">
+                            Hands-on application development, relational database engineering, and full-stack implementation experience.
+                        </p>
+                    </div>
+
+                    <!-- Vertical Timeline Grid -->
+                    <div class="relative border-l border-white/15 pl-6 sm:pl-10 space-y-12 ml-2 sm:ml-4 reveal-on-scroll">
+                        
+                        <!-- Timeline Item 01 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-4 h-4 rounded-full bg-[#060709] border-2 border-[#00F0FF] pulse-glow group-hover:scale-125 transition-transform duration-300"></div>
+
+                            <div class="tech-card p-8 rounded-xl border border-white/15 bg-[#0C0E12]">
+                                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-white/10">
+                                    <div>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/20 uppercase">CURRENT ROLE</span>
+                                        <h3 class="text-xl sm:text-2xl font-bold text-white mt-2">PHP / Laravel Developer</h3>
+                                        <div class="text-sm font-mono text-slate-400">Software Solutions & Web Development</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-mono text-emerald-400 block font-semibold">PRESENT</span>
+                                        <span class="text-xs font-mono text-slate-500">Full-Time</span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3 text-slate-300 text-sm leading-relaxed mb-6 font-normal">
+                                    <p>
+                                        Responsible for designing, developing, and maintaining web applications built on Laravel, PHP, MySQL, and Tailwind CSS.
+                                    </p>
+                                    <ul class="space-y-2 font-mono text-xs text-slate-400">
+                                        <li class="flex items-start gap-2">
+                                            <span class="text-[#00F0FF]">▸</span>
+                                            <span>Engineered relational database schemas and optimized Eloquent queries for high-volume record management.</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span class="text-[#00F0FF]">▸</span>
+                                            <span>Built custom administrative portals featuring role-based authorization, validation pipelines, and automated reporting.</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <span class="text-[#00F0FF]">▸</span>
+                                            <span>Implemented responsive Blade-driven frontend interfaces with custom JavaScript interactions and Tailwind utility layouts.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">Laravel 12</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">PHP 8.3</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">MySQL</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">Blade</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">Tailwind CSS</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Item 02 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] sm:-left-[47px] top-1.5 w-4 h-4 rounded-full bg-[#060709] border-2 border-slate-600 group-hover:border-[#00F0FF] transition-colors duration-300"></div>
+
+                            <div class="tech-card p-8 rounded-xl border border-white/15 bg-[#0C0E12]">
+                                <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-white/10">
+                                    <div>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 text-slate-400 border border-white/10 uppercase">ACADEMIC & INDEPENDENT PROJECTS</span>
+                                        <h3 class="text-xl font-bold text-white mt-2">Full-Stack Application Development</h3>
+                                        <div class="text-sm font-mono text-slate-400">Institutional & Practical Systems</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-mono text-slate-400 block">FOUNDATIONAL</span>
+                                        <span class="text-xs font-mono text-slate-500">Project-Based</span>
+                                    </div>
+                                </div>
+
+                                <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                                    Designed and deployed end-to-end web software solutions, including College Admission portals and Healthcare PHC systems, mastering the complete software development lifecycle from requirements gathering to testing.
+                                </p>
+
+                                <div class="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">System Architecture</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">REST API Design</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-mono rounded border border-white/10 bg-white/5 text-slate-300">CRUD Systems</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-24 border-b border-white/10 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex items-center justify-between mb-12 reveal-on-scroll">
+                        <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase">
+                            <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                            <span>05 / SELECTED WORK & CASE STUDIES</span>
+                        </div>
+                        <span class="text-xs font-mono text-slate-500 hidden sm:inline-block">FEATURED IMPLEMENTATIONS</span>
+                    </div>
+
+                    <div class="mb-16 reveal-on-scroll">
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                            Things I've <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-[#00F0FF]">engineered & launched</span>.
+                        </h2>
+                        <p class="text-slate-400 text-base max-w-2xl mt-4 font-mono">
+                            Detailed breakdowns of real web applications, technical architectural decisions, and database structures.
+                        </p>
+                    </div>
+
+                    <!-- Project 01: College Admission System -->
+                    <div class="tech-card rounded-2xl border border-white/15 bg-[#0C0E12] overflow-hidden mb-16 relative group reveal-on-scroll">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 items-center">
+                            
+                            <div class="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between h-full">
+                                <div>
+                                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-3">
+                                        <span>PROJECT // 001</span>
+                                        <span class="text-[#00F0FF]">FULL-STACK WORKFLOW</span>
+                                    </div>
+
+                                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-4 group-hover:text-[#00F0FF] transition-colors">
+                                        College Admission Management System
+                                    </h3>
+
+                                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                        A multi-stage admission workflow application built on Laravel. Features student registration, document upload status tracking, merit list calculations, and role-based administrative verification.
+                                    </p>
+
+                                    <ul class="space-y-2.5 text-xs font-mono text-slate-400 mb-8">
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-[#00F0FF]">✔</span>
+                                            <span>Multi-stage applicant registration & validation</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-[#00F0FF]">✔</span>
+                                            <span>Officer document verification approval state machine</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-[#00F0FF]">✔</span>
+                                            <span>Automated merit rank calculation engine</span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="flex flex-wrap gap-2 mb-8">
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-cyan-400">Laravel 12</span>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-slate-300">PHP 8.3</span>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-slate-300">MySQL</span>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-slate-300">Tailwind CSS</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 pt-6 border-t border-white/10">
+                                    <button type="button" 
+                                            data-open-case-study="college" 
+                                            class="px-5 py-2.5 bg-[#00F0FF] text-black font-mono font-bold text-xs uppercase tracking-wider rounded hover:bg-[#00F0FF]/90 transition-all flex items-center gap-2">
+                                        <span>VIEW CASE STUDY</span>
+                                        <span>→</span>
+                                    </button>
+                                    <a href="https://github.com/sourabh-panhale" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-slate-400 hover:text-white transition-colors flex items-center gap-1">
+                                        <span>GITHUB</span>
+                                        <span class="text-slate-500">↗</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-7 p-6 sm:p-8 bg-[#07080A] border-t lg:border-t-0 lg:border-l border-white/10 relative">
+                                <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10 text-xs font-mono text-slate-400">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                                        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                                        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                                        <span class="ml-2 text-slate-400 text-[11px]">https://admission.system.internal/dashboard</span>
+                                    </div>
+                                    <span class="text-[#00F0FF] text-[10px]">VERIFIED_BUILD</span>
+                                </div>
+
+                                <div class="relative rounded-lg overflow-hidden border border-white/10 shadow-2xl">
+                                    <img src="/images/college-admission-mockup.png" 
+                                         alt="College Admission Management System Interface" 
+                                         class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         loading="lazy" />
+
+                                    <div class="absolute bottom-4 right-4 bg-[#060709]/90 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 text-[10px] font-mono text-[#00F0FF]">
+                                        LARAVEL 12 + ELOQUENT ORM
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Project 02: Healthcare Management System -->
+                    <div class="tech-card rounded-2xl border border-white/15 bg-[#0C0E12] overflow-hidden mb-16 relative group reveal-on-scroll">
+                        <div class="grid grid-cols-1 lg:grid-cols-12 items-center">
+                            
+                            <div class="lg:col-span-7 p-6 sm:p-8 bg-[#07080A] border-b lg:border-b-0 lg:border-r border-white/10 relative">
+                                <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10 text-xs font-mono text-slate-400">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                                        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                                        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                                        <span class="ml-2 text-slate-400 text-[11px]">https://phc.health.gov.in/opd-queue</span>
+                                    </div>
+                                    <span class="text-emerald-400 text-[10px]">PRODUCTION_READY</span>
+                                </div>
+
+                                <div class="relative rounded-lg overflow-hidden border border-white/10 shadow-2xl">
+                                    <img src="/images/healthcare-system-mockup.png" 
+                                         alt="Healthcare PHC Management System Interface" 
+                                         class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500" 
+                                         loading="lazy" />
+
+                                    <div class="absolute bottom-4 right-4 bg-[#060709]/90 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 text-[10px] font-mono text-emerald-400">
+                                        CLINICAL DATA MODEL + MYSQL
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-5 p-8 sm:p-10 flex flex-col justify-between h-full">
+                                <div>
+                                    <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-3">
+                                        <span>PROJECT // 002</span>
+                                        <span class="text-emerald-400">CLINICAL RECORDS</span>
+                                    </div>
+
+                                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-4 group-hover:text-emerald-400 transition-colors">
+                                        Healthcare / PHC Management System
+                                    </h3>
+
+                                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                        Operational healthcare management system engineered for Primary Health Centres. Handles patient check-in queues, OPD record digitizations, doctor prescription entries, and pharmacy stock deductions.
+                                    </p>
+
+                                    <ul class="space-y-2.5 text-xs font-mono text-slate-400 mb-8">
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-emerald-400">✔</span>
+                                            <span>Token-based OPD patient queue & doctor assignment</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-emerald-400">✔</span>
+                                            <span>Normalized patient health history & prescription records</span>
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <span class="text-emerald-400">✔</span>
+                                            <span>Pharmacy stock inventory movements & daily reporting</span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="flex flex-wrap gap-2 mb-8">
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-emerald-400">Laravel 12</span>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-slate-300">PHP 8.3</span>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-slate-300">MySQL</span>
+                                        <span class="px-2.5 py-1 text-[10px] font-mono rounded bg-white/5 border border-white/10 text-slate-300">Blade</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-4 pt-6 border-t border-white/10">
+                                    <button type="button" 
+                                            data-open-case-study="healthcare" 
+                                            class="px-5 py-2.5 bg-emerald-400 text-black font-mono font-bold text-xs uppercase tracking-wider rounded hover:bg-emerald-300 transition-all flex items-center gap-2">
+                                        <span>VIEW CASE STUDY</span>
+                                        <span>→</span>
+                                    </button>
+                                    <a href="https://github.com/sourabh-panhale" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-slate-400 hover:text-white transition-colors flex items-center gap-1">
+                                        <span>GITHUB</span>
+                                        <span class="text-slate-500">↗</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Project 03 Placeholder -->
+                    <div class="tech-card rounded-2xl border border-dashed border-white/20 bg-[#08090C] p-8 sm:p-12 text-center relative overflow-hidden reveal-on-scroll">
+                        <div class="max-w-xl mx-auto">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono mb-4">
+                                <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                                <span>IN ACTIVE DEVELOPMENT</span>
+                            </div>
+                            <h3 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">
+                                Something technically interesting is next.
+                            </h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-6 font-mono">
+                                Currently architecting a modern Laravel project focusing on API integrations, real-time background queues, and automated data pipelines.
+                            </p>
+                            <div class="inline-block px-4 py-2 rounded bg-white/5 border border-white/10 text-slate-400 font-mono text-xs">
+                                PROJECT_003 // COMING SOON
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Architecture Section -->
+            <section id="architecture" class="py-24 border-b border-white/10 relative bg-[#080A0D]/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase mb-4 reveal-on-scroll">
+                        <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                        <span>06 / SYSTEM ARCHITECTURE</span>
+                    </div>
+
+                    <div class="mb-12 reveal-on-scroll">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                            How I build <span class="text-[#00F0FF]">full-stack Laravel applications</span>.
+                        </h2>
+                        <p class="text-slate-400 text-sm max-w-2xl mt-3 font-mono">
+                            Click or hover over any architectural layer to inspect lifecycle execution details.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch reveal-on-scroll">
+                        
+                        <div class="lg:col-span-7 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                
+                                <div data-arch-node="client" class="tech-card p-5 rounded-xl border border-[#00F0FF] bg-[#00F0FF]/15 cursor-pointer transition-all">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+                                        <span>LAYER 01</span>
+                                        <span class="text-[#00F0FF]">ENTRYPOINT</span>
+                                    </div>
+                                    <h3 class="text-white font-bold text-base mb-1">Client Browser</h3>
+                                    <p class="text-slate-400 text-xs font-mono">HTML5 / Tailwind / JS</p>
+                                </div>
+
+                                <div data-arch-node="vite" class="tech-card p-5 rounded-xl border border-white/10 bg-[#0C0E12] cursor-pointer transition-all">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+                                        <span>LAYER 02</span>
+                                        <span class="text-purple-400">BUNDLER</span>
+                                    </div>
+                                    <h3 class="text-white font-bold text-base mb-1">Vite Asset Pipeline</h3>
+                                    <p class="text-slate-400 text-xs font-mono">Tailwind CSS v4 + JS</p>
+                                </div>
+
+                                <div data-arch-node="router" class="tech-card p-5 rounded-xl border border-white/10 bg-[#0C0E12] cursor-pointer transition-all">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+                                        <span>LAYER 03</span>
+                                        <span class="text-cyan-400">SECURITY</span>
+                                    </div>
+                                    <h3 class="text-white font-bold text-base mb-1">Laravel 12 Router</h3>
+                                    <p class="text-slate-400 text-xs font-mono">Middleware & CSRF</p>
+                                </div>
+
+                                <div data-arch-node="controller" class="tech-card p-5 rounded-xl border border-white/10 bg-[#0C0E12] cursor-pointer transition-all">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+                                        <span>LAYER 04</span>
+                                        <span class="text-amber-400">LOGIC</span>
+                                    </div>
+                                    <h3 class="text-white font-bold text-base mb-1">Controller & Validation</h3>
+                                    <p class="text-slate-400 text-xs font-mono">Form Request & Actions</p>
+                                </div>
+
+                                <div data-arch-node="eloquent" class="tech-card p-5 rounded-xl border border-white/10 bg-[#0C0E12] cursor-pointer transition-all">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+                                        <span>LAYER 05</span>
+                                        <span class="text-emerald-400">ORM</span>
+                                    </div>
+                                    <h3 class="text-white font-bold text-base mb-1">Eloquent ORM</h3>
+                                    <p class="text-slate-400 text-xs font-mono">Query Builder & Models</p>
+                                </div>
+
+                                <div data-arch-node="database" class="tech-card p-5 rounded-xl border border-white/10 bg-[#0C0E12] cursor-pointer transition-all">
+                                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-2">
+                                        <span>LAYER 06</span>
+                                        <span class="text-red-400">PERSISTENCE</span>
+                                    </div>
+                                    <h3 class="text-white font-bold text-base mb-1">MySQL Database</h3>
+                                    <p class="text-slate-400 text-xs font-mono">InnoDB Relational Schema</p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-5 flex">
+                            <div class="tech-card p-6 sm:p-8 rounded-xl border border-white/15 bg-[#0C0E12] w-full flex flex-col justify-between relative">
+                                <div>
+                                    <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10 text-xs font-mono text-slate-400">
+                                        <span>LIFECYCLE INSPECTOR</span>
+                                        <span id="arch-tech" class="text-[#00F0FF]">HTML5 / Tailwind / Vanilla JS</span>
+                                    </div>
+
+                                    <h3 id="arch-title" class="text-xl font-bold text-white mb-4">
+                                        01 // Client Browser
+                                    </h3>
+
+                                    <p id="arch-detail" class="text-slate-300 text-sm leading-relaxed font-sans mb-6">
+                                        Initial HTTP Request sent via TLS 1.3. Returns server-side rendered Blade HTML with optimized Vite assets, achieving instant DOM paint and 95+ Lighthouse score.
+                                    </p>
+                                </div>
+
+                                <div class="pt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                                    <span>PIPELINE: ACTIVE</span>
+                                    <span class="text-emerald-400 font-semibold">0.024s RESP TIME</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Continuous Growth Section -->
+            <section id="learning" class="py-24 border-b border-white/10 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase mb-4 reveal-on-scroll">
+                        <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                        <span>07 / CONTINUOUS GROWTH</span>
+                    </div>
+
+                    <div class="mb-12 reveal-on-scroll">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                            What's next & <span class="text-[#00F0FF]">currently exploring</span>.
+                        </h2>
+                        <p class="text-slate-400 text-sm max-w-2xl mt-3 font-mono">
+                            Transparent roadmap of technical domains I am actively building, testing, and expanding into.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal-on-scroll">
+                        
+                        <div class="tech-card p-6 rounded-xl border border-white/15 bg-[#0C0E12]">
+                            <div class="text-[#00F0FF] font-mono text-xs mb-2">DOMAIN // 01</div>
+                            <h3 class="text-white font-bold text-base mb-2">Advanced Laravel Internals</h3>
+                            <p class="text-slate-300 text-xs leading-relaxed font-normal">
+                                Custom Service Providers, IoC container bindings, contracts, event listeners, and pipeline middlewares.
+                            </p>
+                        </div>
+
+                        <div class="tech-card p-6 rounded-xl border border-white/15 bg-[#0C0E12]">
+                            <div class="text-emerald-400 font-mono text-xs mb-2">DOMAIN // 02</div>
+                            <h3 class="text-white font-bold text-base mb-2">System Design & Caching</h3>
+                            <p class="text-slate-300 text-xs leading-relaxed font-normal">
+                                Redis caching strategies, database query indexing, queue workers, and background job processing.
+                            </p>
+                        </div>
+
+                        <div class="tech-card p-6 rounded-xl border border-white/15 bg-[#0C0E12]">
+                            <div class="text-purple-400 font-mono text-xs mb-2">DOMAIN // 03</div>
+                            <h3 class="text-white font-bold text-base mb-2">RESTful API Architecture</h3>
+                            <p class="text-slate-300 text-xs leading-relaxed font-normal">
+                                Laravel Sanctum API tokens, Resource Transformers, rate limiting, and structured JSON error schemas.
+                            </p>
+                        </div>
+
+                        <div class="tech-card p-6 rounded-xl border border-white/15 bg-[#0C0E12]">
+                            <div class="text-amber-400 font-mono text-xs mb-2">DOMAIN // 04</div>
+                            <h3 class="text-white font-bold text-base mb-2">AI API Integrations</h3>
+                            <p class="text-slate-300 text-xs leading-relaxed font-normal">
+                                Integrating OpenAI / Gemini REST endpoints inside Laravel job queues for automated document parsing.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-24 border-b border-white/10 relative bg-[#080A0D]/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start reveal-on-scroll">
+                        
+                        <div class="lg:col-span-5 space-y-6">
+                            <div class="flex items-center gap-2.5 text-xs font-mono text-[#00F0FF] tracking-widest uppercase">
+                                <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                                <span>08 / INITIATE CONTACT</span>
+                            </div>
+
+                            <h2 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                                Have a problem <span class="text-[#00F0FF]">worth building</span>?
+                            </h2>
+
+                            <p class="text-slate-300 text-base sm:text-lg font-normal leading-relaxed">
+                                Let's turn a good idea into something useful. I am open for full-time opportunities, high-impact projects, and technical collaborations.
+                            </p>
+
+                            <div class="pt-6 space-y-4 font-mono text-sm">
+                                <div class="flex items-center gap-3 text-slate-300">
+                                    <span class="w-2 h-2 rounded-full bg-[#00F0FF] pulse-glow"></span>
+                                    <span class="text-slate-400">EMAIL:</span>
+                                    <a href="mailto:sourabh.panhale.dev@gmail.com" class="text-white hover:text-[#00F0FF] transition-colors underline decoration-slate-600 hover:decoration-[#00F0FF] underline-offset-4">sourabh.panhale.dev@gmail.com</a>
+                                </div>
+                                <div class="flex items-center gap-3 text-slate-300">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                    <span class="text-slate-400">LOCATION:</span>
+                                    <span>Pune, Maharashtra, India</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-6 pt-4 text-xs font-mono text-slate-400">
+                                <a href="https://github.com/sourabh-panhale" target="_blank" rel="noopener noreferrer" class="hover:text-[#00F0FF] transition-colors flex items-center gap-1">
+                                    <span>GITHUB</span>
+                                    <span class="text-slate-500">↗</span>
+                                </a>
+                                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#00F0FF] transition-colors flex items-center gap-1">
+                                    <span>LINKEDIN</span>
+                                    <span class="text-slate-500">↗</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7">
+                            <div class="tech-card p-8 sm:p-10 rounded-2xl border border-white/15 bg-[#0C0E12] shadow-2xl relative">
+                                
+                                <div class="flex items-center justify-between pb-6 mb-6 border-b border-white/10 text-xs font-mono">
+                                    <span class="text-slate-400">TRANSMISSION_FORM // FRONTEND</span>
+                                    <span class="text-[#00F0FF]">DIRECT MESSAGE</span>
+                                </div>
+
+                                <form id="contact-form" class="space-y-6">
+                                    
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        <div>
+                                            <label for="name" class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">YOUR NAME *</label>
+                                            <input type="text" 
+                                                   id="name" 
+                                                   name="name" 
+                                                   required 
+                                                   placeholder="e.g. Alex Morgan"
+                                                   class="w-full px-4 py-3.5 bg-[#060709] border border-white/15 rounded-lg text-slate-200 font-sans text-sm focus:border-[#00F0FF] focus:outline-none transition-colors" />
+                                        </div>
+
+                                        <div>
+                                            <label for="email" class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">EMAIL ADDRESS *</label>
+                                            <input type="email" 
+                                                   id="email" 
+                                                   name="email" 
+                                                   required 
+                                                   placeholder="alex@company.com"
+                                                   class="w-full px-4 py-3.5 bg-[#060709] border border-white/15 rounded-lg text-slate-200 font-sans text-sm focus:border-[#00F0FF] focus:outline-none transition-colors" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="subject" class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">SUBJECT / INQUIRY TYPE</label>
+                                        <input type="text" 
+                                               id="subject" 
+                                               name="subject" 
+                                               placeholder="e.g. Developer Opportunity / Project Inquiry"
+                                               class="w-full px-4 py-3.5 bg-[#060709] border border-white/15 rounded-lg text-slate-200 font-sans text-sm focus:border-[#00F0FF] focus:outline-none transition-colors" />
+                                    </div>
+
+                                    <div>
+                                        <label for="message" class="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">MESSAGE *</label>
+                                        <textarea id="message" 
+                                                  name="message" 
+                                                  rows="4" 
+                                                  required 
+                                                  placeholder="Tell me about your project requirements or team role..."
+                                                  class="w-full px-4 py-3.5 bg-[#060709] border border-white/15 rounded-lg text-slate-200 font-sans text-sm focus:border-[#00F0FF] focus:outline-none transition-colors resize-none"></textarea>
+                                    </div>
+
+                                    <div id="form-status-msg" class="hidden p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono"></div>
+
+                                    <button type="submit" 
+                                            data-magnetic
+                                            class="w-full py-4 bg-[#00F0FF] text-black font-mono font-bold text-xs uppercase tracking-widest rounded-lg border border-[#00F0FF] hover:bg-[#00F0FF]/90 transition-all duration-200 flex items-center justify-center gap-2">
+                                        <span>TRANSMIT MESSAGE</span>
+                                        <span>→</span>
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-12 bg-[#050608] border-t border-white/10 relative text-xs font-mono text-slate-500">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
+                    
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                        <span class="text-white font-bold tracking-wider">SOURABH PANHALE</span>
+                        <span class="text-slate-600">// PHP / LARAVEL DEVELOPER</span>
+                    </div>
+
+                    <div class="flex items-center space-x-6">
+                        <a href="#hero" class="hover:text-white transition-colors">HOME</a>
+                        <a href="#about" class="hover:text-white transition-colors">ABOUT</a>
+                        <a href="#projects" class="hover:text-white transition-colors">PROJECTS</a>
+                        <a href="#contact" class="hover:text-white transition-colors">CONTACT</a>
+                        <a href="https://github.com/sourabh-panhale" target="_blank" rel="noopener noreferrer" class="hover:text-[#00F0FF] transition-colors">GITHUB ↗</a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hover:text-[#00F0FF] transition-colors">LINKEDIN ↗</a>
+                    </div>
+
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 text-[11px]">
+                    <div>
+                        &copy; 2026 Sourabh Panhale. All rights reserved.
+                    </div>
+
+                    <div class="flex items-center gap-2 text-slate-400">
+                        <span class="text-slate-600">SYSTEM //</span>
+                        <span>MODERN FRONTEND ARCHITECTURE</span>
+                    </div>
+                </div>
+
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Case Study Interactive Modal -->
+    <div id="case-study-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 lg:p-8" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        
+        <div id="modal-backdrop" class="fixed inset-0"></div>
+
+        <div class="relative bg-[#0C0E12] border border-white/10 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl z-10 p-6 sm:p-10 text-left">
+            
+            <div class="flex items-center justify-between pb-6 mb-6 border-b border-white/10">
+                <div class="flex items-center gap-2 text-xs font-mono text-[#00F0FF]">
+                    <span class="w-2 h-2 rounded-full bg-[#00F0FF]"></span>
+                    <span>DEEP DIVE CASE STUDY</span>
+                </div>
+                <button id="modal-close-btn" 
+                        type="button" 
+                        class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors font-mono text-xs flex items-center gap-1.5 focus:outline-none"
+                        aria-label="Close modal">
+                    <span>[ESC] CLOSE</span>
+                    <span class="text-lg leading-none">&times;</span>
+                </button>
+            </div>
+
+            <div class="mb-8">
+                <h2 id="modal-title" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
+                    Project Title Placeholder
+                </h2>
+                <p id="modal-subtitle" class="text-slate-400 text-sm font-mono">
+                    Project Subtitle Placeholder
+                </p>
+
+                <div id="modal-stack" class="flex flex-wrap gap-2 mt-4"></div>
+            </div>
+
+            <div class="rounded-xl overflow-hidden border border-white/10 mb-8 bg-[#060709]">
+                <img id="modal-image" src="" alt="Project Case Study Screenshot" class="w-full h-auto object-cover max-h-[400px]" />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="p-6 rounded-xl border border-white/10 bg-[#07080A]">
+                    <div class="text-xs font-mono text-[#00F0FF] mb-2">01 // THE PROBLEM</div>
+                    <p id="modal-problem" class="text-slate-300 text-sm leading-relaxed"></p>
+                </div>
+
+                <div class="p-6 rounded-xl border border-white/10 bg-[#07080A]">
+                    <div class="text-xs font-mono text-emerald-400 mb-2">02 // THE SOLUTION</div>
+                    <p id="modal-solution" class="text-slate-300 text-sm leading-relaxed"></p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-white mb-3">System Overview</h3>
+                <p id="modal-overview" class="text-slate-300 text-sm leading-relaxed font-sans"></p>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-white mb-3">Key Features & Modules</h3>
+                <ul id="modal-features" class="space-y-2.5"></ul>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-lg font-bold text-white mb-3">Technical & Architectural Decisions</h3>
+                <ul id="modal-decisions" class="space-y-2.5"></ul>
+            </div>
+
+            <div class="p-6 rounded-xl border border-white/10 bg-[#07080A] mb-8">
+                <div class="text-xs font-mono text-amber-400 mb-2">LESSONS & KEY TAKEAWAYS //</div>
+                <p id="modal-learned" class="text-slate-300 text-sm leading-relaxed font-sans"></p>
+            </div>
+
+            <div class="flex items-center justify-between pt-6 border-t border-white/10 text-xs font-mono">
+                <a id="modal-github-btn" href="#" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 bg-[#00F0FF] text-black font-bold rounded hover:bg-[#00F0FF]/90 transition-all flex items-center gap-2">
+                    <span>VIEW ON GITHUB</span>
+                    <span>↗</span>
+                </a>
+                <span class="text-slate-500 font-mono text-xs">SOURABH PANHALE PORTFOLIO</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Interactive Script -->
+    <script src="js/app.js" defer></script>
+</body>
+</html>
